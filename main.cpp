@@ -72,10 +72,14 @@ int lerCategoria(struct Categorias x[]){
         cin.getline(x[i].desc, 60);
         i++;
 
-        cout << "Deseja cadastrar outra categoria: (s ou S)" << endl;
+        cout << "Deseja cadastrar outro categoria: (Y ou N)" << endl;
         cin >> conf; 
-        } while (conf=='s' || conf =='S');
-    return i;
+        if (conf == 'N' || conf == 'n') {
+            cout << "Operacao Finalizada" << endl;
+            break;
+        }
+    }while (conf=='Y' || conf =='y');
+    return i;   
 }
 
 int lerProduto(struct Produtos x[]){
@@ -104,9 +108,13 @@ int lerProduto(struct Produtos x[]){
         cin >> x[i].quantEstoque;
         i++;
 
-        cout << "Deseja cadastrar outro produto: (s ou S)" << endl;
+        cout << "Deseja cadastrar outro produto: (Y ou N)" << endl;
         cin >> conf; 
-    }while (conf=='s' || conf =='S');
+        if (conf == 'N' || conf == 'n') {
+            cout << "Operacao Finalizada" << endl;
+            break;
+        }
+    }while (conf=='Y' || conf =='y');
     return i;   
 }
 
@@ -140,3 +148,6 @@ int main(){
     } while(opcao!=5);
 
 }
+
+/*fazer esquema dele nao deixar o usuario definir um estoque menor que o estoque minimo
+*/
