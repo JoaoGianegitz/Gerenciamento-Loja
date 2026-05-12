@@ -47,6 +47,15 @@ struct ItensVenda{
     int quant;
 };  
 
+void menu(){
+        cout << "\n====================Menu==================\n" << endl;
+        cout << "1- Leitura de Categorias" << endl;
+        cout << "2 - Leitura de Produtos" << endl;
+        cout << "3- " << endl;
+        cout << "4 - " << endl;
+        cout << "5 - Sair" << endl;
+}
+
 int lerCategoria(struct Categorias x[]){
     int i=0;
     char conf;
@@ -101,16 +110,33 @@ int lerProduto(struct Produtos x[]){
     return i;   
 }
 
-void inserir_cliente(struct Clientes x[], int contX){
-    int i=0;
-    while(i<=)
-
-}
-
-
-
-
-
 int main(){
+
+    Categorias cat[TAM];
+
+    Produtos prod[TAM];
+
+    int opcao;
+
+    do {
+        menu();
+        cout << "Faca sua escolha" << endl;
+        cin >> opcao;
+        switch(opcao) {
+            case 1:
+                lerCategoria(cat);
+                break;
+            case 2:
+                lerProduto(prod);
+                break;
+            case 3:
+
+            case 4:
+
+            case 5:
+                cout << "Encerrando operacao" << endl;
+                break;
+        }
+    } while(opcao!=5);
 
 }
