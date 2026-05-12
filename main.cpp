@@ -1,11 +1,12 @@
 #include <iostream>
 #include <string>
+#include <conio.h>
 
 using namespace std;
 
 #define TAM 10
 
-
+// Iinicio da definição da estrutura de dados
 struct Categorias{
     int cod;
     char desc[60];
@@ -46,31 +47,34 @@ struct ItensVenda{
     int codProd;
     int quant;
 };  
+// fim da estrutura de dados
 
+// função menu
 void menu(){
         cout << "\n====================Menu==================\n" << endl;
         cout << "1- Leitura de Categorias" << endl;
         cout << "2 - Leitura de Produtos" << endl;
-        cout << "3- " << endl;
+        cout << "3- Buscar Cliente" << endl;
         cout << "4 - " << endl;
         cout << "5 - Sair" << endl;
 }
 
-int lerCategoria(struct Categorias x[]){
-    int i=0;
+
+// função de leitura das Categorias
+void lerCategoria(struct Categorias x[], int &cont){
     char conf;
     do{
-        if(i>=TAM){
+        if(cont>=TAM){
             cout << "Limite Atingido" << endl;
             break;
         }    
         cout << "\nCADASTRO DE CATEGORIAS\n" << endl;
-        cout << "Digite codigo: " << endl;
-        cin >> x[i].cod;
+        cout << "Digite codigo: " << cont+1 << endl;
+        cin >> x[cont].cod;
         cin.ignore();
-        cout << "Digite descricao: " << endl;
-        cin.getline(x[i].desc, 60);
-        i++;
+        cout << "Digite descricao: " << cont+1 << endl;
+        cin.getline(x[cont].desc, 60);
+        cont++;
 
         cout << "Deseja cadastrar outro categoria: (Y ou N)" << endl;
         cin >> conf; 
@@ -79,34 +83,33 @@ int lerCategoria(struct Categorias x[]){
             break;
         }
     }while (conf=='Y' || conf =='y');
-    return i;   
 }
 
-int lerProduto(struct Produtos x[]){
-    int i=0;
+// função de leitura de produtos
+void lerProduto(struct Produtos x[], int &cont){
     char conf;
     do{
-        if(i>=TAM){
+        if(cont>=TAM){
             cout << "Limite Atingido" << endl;
             break;
         }
         cout << "\nCADASTRO DE PRODUTOS\n" << endl;
-        cout << "Digite codigo: " << endl;
-        cin >> x[i].cod;
-        cout << "Digite codigo de categoria: " << endl;
-        cin >> x[i].codCategoria;
-        cout << "Digite descricao: " << endl;
+        cout << "Digite codigo: " << cont+1 << endl;
+        cin >> x[cont].cod;
+        cout << "Digite codigo de categoria: " << cont+1 << endl;
+        cin >> x[cont].codCategoria;
+        cout << "Digite descricao: " << cont+1 << endl;
         cin.ignore();
-        cin.getline(x[i].desc, 60);
-        cout << "Digite Estoque Maximo: " << endl;
-        cin >> x[i].estoqueMax;
-        cout << "Digite Estoque Minimo: " << endl;
-        cin >> x[i].estoqueMin;
-        cout << "Digite preco unitario: " << endl;
-        cin >> x[i].precoUnit;
-        cout << "Digite quantidade de Estoque: " << endl;
-        cin >> x[i].quantEstoque;
-        i++;
+        cin.getline(x[cont].desc, 60);
+        cout << "Digite Estoque Maximo: " << cont+1 << endl;
+        cin >> x[cont].estoqueMax;
+        cout << "Digite Estoque Minimo: " << cont+1 << endl;
+        cin >> x[cont].estoqueMin;
+        cout << "Digite preco unitario: " << cont+1 << endl;
+        cin >> x[cont].precoUnit;
+        cout << "Digite quantidade de Estoque: " << cont+1 << endl;
+        cin >> x[cont].quantEstoque;
+        cont++;
 
         cout << "Deseja cadastrar outro produto: (Y ou N)" << endl;
         cin >> conf; 
@@ -115,7 +118,27 @@ int lerProduto(struct Produtos x[]){
             break;
         }
     }while (conf=='Y' || conf =='y');
-    return i;   
+}
+
+void buscaCliente(struct Clientes cli[], int cod){
+    int i=0, f=TAM-1;
+    int m=(i+f) / 2;
+    for (;f>=i && cod != cli[m].cod; m=(i+f) / 2){
+        if(cod>cli[m].cod){
+            i=m+1; }
+        else
+            f=m-1;
+        
+    if (cod == cli[m].cod){
+        cout << "\n\n Cliente Encontrado";
+        cout << "\nCodigo do Cliente: " << cli[m].cod;
+        cout << "\tNome: " << cli[m].nome;
+        cout << "\tEndereco: " << cli[m].endereco;
+        cout << "\tTelefone: " << cli[m].telefone;
+    } else 
+        cout << "\n\n Cliente nao encontrado";
+    getch();
+    }
 }
 
 int main(){
@@ -124,6 +147,11 @@ int main(){
 
     Produtos prod[TAM];
 
+    Clientes cliente[TAM];
+
+    int codPesquisa=0;
+    int contCategorias=0;
+    int contProdutos=0;
     int opcao;
 
     do {
@@ -132,18 +160,25 @@ int main(){
         cin >> opcao;
         switch(opcao) {
             case 1:
-                lerCategoria(cat);
+                lerCategoria(cat, contCategorias);
                 break;
             case 2:
-                lerProduto(prod);
+                lerProduto(prod, contProdutos);
                 break;
             case 3:
-
+                for(codPesquisa=TAM-1; codPesquisa !=0;){
+                    cout << "Informe codigo do cliente a ser buscado: ";
+                    cin >> codPesquisa;
+                    if(codPesquisa!=0)
+                        buscaCliente(cliente, codPesquisa);
+                }
             case 4:
 
             case 5:
                 cout << "Encerrando operacao" << endl;
                 break;
+            default:
+                cout << "Opcao invalida" << endl;
         }
     } while(opcao!=5);
 
