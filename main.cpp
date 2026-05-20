@@ -136,7 +136,7 @@ bool verificaCliente(struct Clientes x[], int contCliente, int codPesquisa){
 
 
 // aqui na leitura de clientes
-void lerCliente(struct Clientes x[], int &cont, int tamanhoMax){
+void inclusao_cliente(struct Clientes x[], int &cont, int tamanhoMax){
     char conf;
     int cadastrar=0;
     Clientes aux;
@@ -180,6 +180,62 @@ void lerCliente(struct Clientes x[], int &cont, int tamanhoMax){
     }
 }
 
+bool verificaVendedor(struct Vendedores x[], int contVendedor, int codPesquisa){
+    for (int i=0; i<contVendedor; i++){
+    if (codPesquisa == x[i].cod) {                  //(codPesquisa == cli[i].cod){
+        cout << "\n\n VENDEDOR JA CADASTRADO!";
+        cout << "\nCodigo do VENDEDOR: " << x[i].cod;
+        cout << "\tNome: " << x[i].nome;
+        cout << "\tTelefone: " << x[i].telefone << endl;
+
+        return true;
+    } 
+    }
+    return false;
+}
+
+
+void inclusao_vendedor(struct Vendedores x[], int &contVendedor, int tamanhoMax){
+    char conf;
+    int cadastrar=0;
+    Vendedores aux;
+    cout << "Deseja cadastrar quantos Vendedores: " << endl;
+    cin >> cadastrar;
+    for(int i=0; i<cadastrar;i++){
+        if(contVendedor >= tamanhoMax){
+            cout << "\n[ERRO] Limite de cadastros digitados (" << tamanhoMax << ")!" << endl;
+            break;
+        }
+
+        cout << "\tCADASTRO DE VENDEDORES\t" << endl;
+        cout << "Posicao: " << contVendedor+1 << endl;
+        cout << "Digite codigo do vendedor: " << endl;
+        cin >> aux.cod;
+        while(verificaVendedor(x, contVendedor, aux.cod)){ 
+            cout << "Digite outro codigo: " << endl;
+            cin >> aux.cod;
+        }
+        cin.ignore();
+        cout << "Digite nome do Vendedor: " << endl;
+        cin.getline(aux.nome, 30);
+        cout << "Digite telefone do Vendedor: " << endl;
+        cin.getline(aux.telefone, 13);
+
+        cout << "Confirmacao: " << endl;
+        cout << "Codigo: " << aux.cod;
+        cout << "| Nome: " << aux.nome;
+        cout << "| Telefone: " << aux.telefone;
+
+        cout << "Voce confirma as informacoes: (Y ou N)" << endl;
+        cin >> conf; 
+
+        if(conf=='y' || conf=='Y'){
+            x[contVendedor]=aux;
+            contVendedor++;
+        } else cout << "Cadastro cancelado";
+    }
+}
+
 void buscaCliente(struct Clientes cli[], int contCliente){
     int codPesquisa=0;
     cout << "Digite codigo do cliente que esta buscando: " << endl;
@@ -199,6 +255,8 @@ void buscaCliente(struct Clientes cli[], int contCliente){
 
 }
 
+
+
 int main(){
 
     Categorias cat[100];
@@ -210,6 +268,7 @@ int main(){
     int contCategorias=0;
     int contProdutos=0;
     int contClientes=0;
+    int contVendedores=0;
     int opcao;
     int contX=0, contS=0, contA=0;
 
@@ -225,10 +284,10 @@ int main(){
                 lerProduto(prod, contProdutos, 100); // LEITURA DE PRODUTOS
                 break;
             case 3:
-                lerCliente(cliente, contClientes, 100);
+                inclusao_cliente(cliente, contClientes, 100);
                 break;
             case 4:
-            
+                inclusao_vendedor(vendedor, contVendedores, 100);
                 break;
             case 5:
                 buscaCliente(cliente, contClientes);
