@@ -53,7 +53,7 @@ void menu(){
         cout << "3- Inclusao de Cliente" << endl;
         cout << "4 - Inclusao de Vendedor" << endl;
         cout << "5 - Busca Cliente" << endl;
-        cout << "6 - Sair" << endl;
+        cout << "0 - Sair" << endl;
 }
 
 
@@ -117,6 +117,25 @@ void lerProduto(struct Produtos x[], int &cont, int tamanhoMax){
     }while (conf=='Y' || conf =='y');
 }
 
+
+// função verifica cliente. Ultilizamos um contador de cliente e um codigo de pesquisa, onde temos um loop que percorre toda a lista para ver se existe um codigo igual, caso existir ele vai retornar um valor booleano, que vamos usar como parametro na hora de fazer a leitura dos registros, para saber se devemos continuar fazendo a leitura ou não
+bool verificaCliente(struct Clientes x[], int contCliente, int codPesquisa){
+    for (int i=0; i<contCliente; i++){
+    if (codPesquisa == x[i].cod) {                  //(codPesquisa == cli[i].cod){
+        cout << "\n\n CLIENTE JA CADASTRADO!";
+        cout << "\nCodigo do Cliente: " << x[i].cod;
+        cout << "\tNome: " << x[i].nome;
+        cout << "\tEndereco: " << x[i].endereco;
+        cout << "\tTelefone: " << x[i].telefone << endl;
+
+        return true;
+    } 
+    }
+    return false;
+}
+
+
+// aqui na leitura de clientes
 void lerCliente(struct Clientes x[], int &cont, int tamanhoMax){
     char conf;
     int cadastrar=0;
@@ -133,6 +152,10 @@ void lerCliente(struct Clientes x[], int &cont, int tamanhoMax){
         cout << "Posicao: " << cont+1 << endl;
         cout << "Digite codigo do cliente: " << endl;
         cin >> aux.cod;
+        while(verificaCliente(x, cont, aux.cod)){ // esse while aqui é para verificar se o codigo é igual a algum da lista, caso for ele pede ao usuario digitar novamente, outro codigo, repetindo ate que digite outro codigo
+            cout << "Digite outro codigo: " << endl;
+            cin >> aux.cod;
+        }
         cin.ignore();
         cout << "Digite nome do cliente: " << endl;
         cin.getline(aux.nome, 30);
@@ -155,7 +178,6 @@ void lerCliente(struct Clientes x[], int &cont, int tamanhoMax){
             cont++;
         } else cout << "Cadastro cancelado";
     }
-// sera que devo fazer uma confirmação para ver se ja temos o mesmo codigo cadastrado?
 }
 
 void buscaCliente(struct Clientes cli[], int contCliente){
@@ -206,7 +228,7 @@ int main(){
                 lerCliente(cliente, contClientes, 100);
                 break;
             case 4:
-                ...
+            
                 break;
             case 5:
                 buscaCliente(cliente, contClientes);
@@ -220,3 +242,7 @@ int main(){
     } while(opcao!=0);
 
 }
+/*
+Vinicius eu implementei uma função para fazer a leitura dos clientes, e uma para verificar se existe o codigo que o usuario está digitnado na lista
+replique isso para a função dos vendedores tbm, entenda o codigo!!!
+*/
