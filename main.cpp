@@ -52,7 +52,7 @@ void menu(){
         cout << "2 - Leitura de Produtos" << endl;
         cout << "3- Inclusao de Cliente" << endl;
         cout << "4 - Inclusao de Vendedor" << endl;
-        cout << "5 - Busca Cliente" << endl;
+        cout << "5 - Registrar nova venda" << endl;
         cout << "0 - Sair" << endl;
 }
 
@@ -136,23 +136,23 @@ bool verificaCliente(struct Clientes x[], int contCliente, int codPesquisa){
 
 
 // aqui na leitura de clientes
-void inclusao_cliente(struct Clientes x[], int &cont, int tamanhoMax){
+void inclusao_cliente(struct Clientes x[], int &contCliente, int tamanhoMax){
     char conf;
     int cadastrar=0;
     Clientes aux;
     cout << "Deseja cadastrar quantos clientes: " << endl;
     cin >> cadastrar;
     for(int i=0; i<cadastrar;i++){
-        if(cont >= tamanhoMax){
+        if(contCliente >= tamanhoMax){
             cout << "\n[ERRO] Limite de cadastros digitados (" << tamanhoMax << ")!" << endl;
             break;
         }
 
         cout << "\tCADASTRO DE CLIENTES\t" << endl;
-        cout << "Posicao: " << cont+1 << endl;
+        cout << "Posicao: " << contCliente+1 << endl;
         cout << "Digite codigo do cliente: " << endl;
         cin >> aux.cod;
-        while(verificaCliente(x, cont, aux.cod)){ // esse while aqui é para verificar se o codigo é igual a algum da lista, caso for ele pede ao usuario digitar novamente, outro codigo, repetindo ate que digite outro codigo
+        while(verificaCliente(x, contCliente, aux.cod)){ // esse while aqui é para verificar se o codigo é igual a algum da lista, caso for ele pede ao usuario digitar novamente, outro codigo, repetindo ate que digite outro codigo
             cout << "Digite outro codigo: " << endl;
             cin >> aux.cod;
         }
@@ -174,8 +174,8 @@ void inclusao_cliente(struct Clientes x[], int &cont, int tamanhoMax){
         cin >> conf; 
 
         if(conf=='y' || conf=='Y'){
-            x[cont]=aux;
-            cont++;
+            x[contCliente]=aux;
+            contCliente++;
         } else cout << "Cadastro cancelado";
     }
 }
@@ -256,21 +256,95 @@ void buscaCliente(struct Clientes cli[], int contCliente){
 }
 
 
+bool imprimirCliente(struct Clientes x[], int contCliente, int codCliente){
+    for(int i=0; i<contCliente; i++){
+        if (codCliente == x[i].cod) {                
+            cout << "\nCLIENTE!";
+            cout << "\nCodigo do Cliente: " << x[i].cod;
+            cout << "\tNome: " << x[i].nome;
+            cout << "\tEndereco: " << x[i].endereco;
+            cout << "\tTelefone: " << x[i].telefone << endl;
+
+            return true;
+        }
+    }
+    cout << "Cliente nao cadastrado" << endl;
+    return false; 
+}
+
+bool imprimirVendedor(struct Vendedores x[], int contVendedor, int codVendedor){
+    for(int i=0; i<contVendedor; i++){
+        if (codVendedor == x[i].cod) {                
+            cout << "\nVENDEDOR!";
+            cout << "\nCodigo do Vendedor: " << x[i].cod;
+            cout << "\tNome: " << x[i].nome;
+            cout << "\tTelefone: " << x[i].telefone << endl;
+
+            return true;
+        }
+    }
+    cout << "Vendedor nao cadastrado" << endl;
+    return false; 
+}
+
+void registrar_venda(struct Vendas x[], int &contVendas, int tamanhoMax, struct Clientes cliente[], int &contCliente, struct Vendedores vendedor[], int &contVendedores){
+    char conf;
+    int cadastrar=0;
+    Vendas aux;
+    cout << "Deseja cadastrar quantas vendas: " << endl;
+    cin >> cadastrar;
+    for(int i=0; i<cadastrar;i++){
+        if(contVendas >= tamanhoMax){
+            cout << "\n[ERRO] Limite de cadastros digitados (" << tamanhoMax << ")!" << endl;
+            break;
+        }
+
+        cout << "\nLANCAMENTO DE VENDAS\t" << endl;
+        cout << "Posicao: " << contVendas+1 << endl;
+        cout << "Digite codigo da venda: " << endl;
+        cin >> aux.cod;
+        cout << "Digite codigo do cliente: " << endl;
+        cin >> aux.codCliente;
+        imprimirCliente(cliente, contCliente, aux.codCliente);
+        cout << "Digite codigo do Vendedor: " << endl;
+        cin >> aux.codVendedor;
+        imprimirVendedor(vendedor, contVendedores, aux.codVendedor);
+
+        cout << "Digite data da venda" << endl;
+        cin.ignore();
+        cin.getline(aux.data, 10);
+
+        cout << "Confirmacao: " << endl;
+        cout << "\nCodigo da venda: " << aux.cod;
+        cout << "\tCodigo do Cliente: " << aux.codCliente;
+        cout << "\tCodigo do Vendedor: " << aux.codVendedor;
+        cout << "\tData da venda: " << aux.data << endl;
+
+        cout << "Voce confirma as informacoes: (Y ou N)" << endl;
+        cin >> conf; 
+
+        if(conf=='y' || conf=='Y'){
+            x[contVendas]=aux;
+            contVendas++;
+        } else cout << "Cadastro cancelado";
+    }
+}
 
 int main(){
 
     Categorias cat[100];
     Produtos prod[100];
-    Clientes cliente[100], clienteS[100], clienteA[100];
-    Vendedores vendedor[100], vendedorS[100], vendedorA[100];
+    Clientes cliente[100];
+    Vendedores vendedor[100];
+    Vendas vendas[100];
 
     int codPesquisa=0;
     int contCategorias=0;
     int contProdutos=0;
     int contClientes=0;
     int contVendedores=0;
+    int contVendas=0;
     int opcao;
-    int contX=0, contS=0, contA=0;
 
     do {
         menu();
@@ -290,7 +364,7 @@ int main(){
                 inclusao_vendedor(vendedor, contVendedores, 100);
                 break;
             case 5:
-                buscaCliente(cliente, contClientes);
+                registrar_venda(vendas, contVendas, 100, cliente, contClientes, vendedor, contVendedores);
                 break;
             case 0:
                 cout << "Encerrando operacao" << endl;

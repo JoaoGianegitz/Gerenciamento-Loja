@@ -54,3 +54,11 @@ int main(){
     int cont;
     lerCliente(cli, cont)
 }
+
+
+struct Vendas{
+    int cod;
+    int codCliente;
+    int codVendedor;
+    char data[10];
+};
