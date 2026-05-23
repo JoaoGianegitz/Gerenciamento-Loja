@@ -287,47 +287,75 @@ bool imprimirVendedor(struct Vendedores x[], int contVendedor, int codVendedor){
     return false; 
 }
 
-void registrar_venda(struct Vendas x[], int &contVendas, int tamanhoMax, struct Clientes cliente[], int &contCliente, struct Vendedores vendedor[], int &contVendedores){
+void lancar_produtos(struct ItensVenda itens[], int &contItens, int codVenda){
+    ItensVenda aux_itens;
     char conf;
-    int cadastrar=0;
+    char confirmacao;
+    do {
+
+    aux_itens.codVenda=codVenda;
+
+    cout << "Digite Codigo do produto: " << endl; 
+    cin >> aux_itens.codProd;
+    cout << "Digite quantidade: " << endl;
+    cin >> aux_itens.quant;
+    cout << "\nCodigo do Produto: " << aux_itens.codProd;
+    cout << "\nQuantidade de Produtos: " << aux_itens.quant;
+    cout << "Voce confirma as informacoes: (Y ou N)" << endl;
+    cin >> conf; 
+
+    if (conf=='y' || conf=='Y'){
+        itens[contItens]=aux_itens;
+        cout << "Informacoes Confirmadas" << endl;
+        contItens++;
+    } 
+    else cout << "Lancamento nao confirmado" << endl;
+
+    cout << "Deseja cadastrar mais algum item? (Y/N): ";
+    cin >> confirmacao;
+
+    } while(confirmacao == 'y' || confirmacao == 'Y');
+}
+
+// função registrar venda, usamos como parametro as 3 structs junto a seus contadores, e chamamos outras 2 funções diferentes para imprimir cliente e vendedor com seus dados. Agora estamos implementando a função para lançar venda
+void registrar_venda(struct Vendas x[], int &contVendas, int tamanhoMax, struct Clientes cliente[], int &contCliente, struct Vendedores vendedor[], int &contVendedores, struct ItensVenda itens[], int &contItens){
+    char conf;
     Vendas aux;
-    cout << "Deseja cadastrar quantas vendas: " << endl;
-    cin >> cadastrar;
-    for(int i=0; i<cadastrar;i++){
-        if(contVendas >= tamanhoMax){
-            cout << "\n[ERRO] Limite de cadastros digitados (" << tamanhoMax << ")!" << endl;
-            break;
-        }
 
-        cout << "\nLANCAMENTO DE VENDAS\t" << endl;
-        cout << "Posicao: " << contVendas+1 << endl;
-        cout << "Digite codigo da venda: " << endl;
-        cin >> aux.cod;
-        cout << "Digite codigo do cliente: " << endl;
-        cin >> aux.codCliente;
-        imprimirCliente(cliente, contCliente, aux.codCliente);
-        cout << "Digite codigo do Vendedor: " << endl;
-        cin >> aux.codVendedor;
-        imprimirVendedor(vendedor, contVendedores, aux.codVendedor);
-
-        cout << "Digite data da venda" << endl;
-        cin.ignore();
-        cin.getline(aux.data, 10);
-
-        cout << "Confirmacao: " << endl;
-        cout << "\nCodigo da venda: " << aux.cod;
-        cout << "\tCodigo do Cliente: " << aux.codCliente;
-        cout << "\tCodigo do Vendedor: " << aux.codVendedor;
-        cout << "\tData da venda: " << aux.data << endl;
-
-        cout << "Voce confirma as informacoes: (Y ou N)" << endl;
-        cin >> conf; 
-
-        if(conf=='y' || conf=='Y'){
-            x[contVendas]=aux;
-            contVendas++;
-        } else cout << "Cadastro cancelado";
+    if(contVendas >= tamanhoMax){
+        cout << "\n[ERRO] Limite de cadastros digitados (" << tamanhoMax << ")!" << endl;
+        return;
     }
+    cout << "\nLANCAMENTO DE VENDAS\t" << endl;
+    cout << "Posicao: " << contVendas+1 << endl;
+    cout << "Digite codigo da venda: " << endl;
+    cin >> aux.cod;
+    lancar_produtos(itens, contItens, aux.cod);
+    cout << "Digite codigo do cliente: " << endl;
+    cin >> aux.codCliente;
+    imprimirCliente(cliente, contCliente, aux.codCliente);
+    cout << "Digite codigo do Vendedor: " << endl;
+     cin >> aux.codVendedor;
+    imprimirVendedor(vendedor, contVendedores, aux.codVendedor);
+
+    cout << "Digite data da venda" << endl;
+    cin.ignore();
+    cin.getline(aux.data, 10);
+
+    cout << "Confirmacao: " << endl;
+    cout << "\nCodigo da venda: " << aux.cod;
+    cout << "\tCodigo do Cliente: " << aux.codCliente;
+    cout << "\tCodigo do Vendedor: " << aux.codVendedor;
+    cout << "\tData da venda: " << aux.data << endl;
+
+    cout << "Voce confirma as informacoes: (Y ou N)" << endl;
+    cin >> conf; 
+
+    if(conf=='y' || conf=='Y'){
+        x[contVendas]=aux;
+        contVendas++;
+    } else cout << "Cadastro cancelado";
+
 }
 
 int main(){
@@ -337,6 +365,7 @@ int main(){
     Clientes cliente[100];
     Vendedores vendedor[100];
     Vendas vendas[100];
+    ItensVenda itens_venda[100];
 
     int codPesquisa=0;
     int contCategorias=0;
@@ -344,6 +373,7 @@ int main(){
     int contClientes=0;
     int contVendedores=0;
     int contVendas=0;
+    int contItens=0;
     int opcao;
 
     do {
@@ -364,7 +394,7 @@ int main(){
                 inclusao_vendedor(vendedor, contVendedores, 100);
                 break;
             case 5:
-                registrar_venda(vendas, contVendas, 100, cliente, contClientes, vendedor, contVendedores);
+                registrar_venda(vendas, contVendas, 100, cliente, contClientes, vendedor, contVendedores, itens_venda, contItens);
                 break;
             case 0:
                 cout << "Encerrando operacao" << endl;
