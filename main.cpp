@@ -4,7 +4,7 @@
 
 using namespace std;
 
-// Iinicio da definição da estrutura de dados
+// Inicio da definição da estrutura de dados
 struct Categorias{
     int cod;
     char desc[60];
@@ -53,6 +53,7 @@ void menu(){
         cout << "3- Inclusao de Cliente" << endl;
         cout << "4 - Inclusao de Vendedor" << endl;
         cout << "5 - Registrar nova venda" << endl;
+        cout << "6 - Inclusao de itens na venda" << endl;
         cout << "0 - Sair" << endl;
 }
 
@@ -287,7 +288,12 @@ bool imprimirVendedor(struct Vendedores x[], int contVendedor, int codVendedor){
     return false; 
 }
 
-void lancar_produtos(struct ItensVenda itens[], int &contItens, int codVenda){
+void imprimir_produto(struct Produtos x[], int codigoProduto){
+    cout << "Descricao Produto: " << x[codigoProduto].desc;
+    cout << "Preco unitario: " << x[codigoProduto].precoUnit;
+    cout << "Quantidade em estoque: " << x[codigoProduto].quantEstoque << endl;
+}
+void lancar_produtos(struct ItensVenda itens[], int &contItens, int codVenda, struct Produtos produtos[], int contProdutos){
     ItensVenda aux_itens;
     char conf;
     char confirmacao;
@@ -297,14 +303,25 @@ void lancar_produtos(struct ItensVenda itens[], int &contItens, int codVenda){
 
     cout << "Digite Codigo do produto: " << endl; 
     cin >> aux_itens.codProd;
+    if(aux_itens.codProd < 0 || aux_itens.codProd >= contProdutos){
+        cout << "Produto nao existe" << endl;
+        continue; // interromper a iteração atual de um loop, mas tambem utilizado especificamente para uma condicional
+    }
+    imprimir_produto(produtos, aux_itens.codProd);
     cout << "Digite quantidade: " << endl;
     cin >> aux_itens.quant;
+    if(aux_itens.quant > produtos[aux_itens.codProd].quantEstoque){
+        cout << "Estoque insuficiente" << endl;
+        cout << "Disponivel no momento: " << produtos[aux_itens.codProd].quantEstoque << endl;
+        continue;
+    }
     cout << "\nCodigo do Produto: " << aux_itens.codProd;
     cout << "\nQuantidade de Produtos: " << aux_itens.quant;
     cout << "Voce confirma as informacoes: (Y ou N)" << endl;
     cin >> conf; 
 
     if (conf=='y' || conf=='Y'){
+        produtos[aux_itens.codProd].quantEstoque=produtos[aux_itens.codProd].quantEstoque-aux_itens.quant;
         itens[contItens]=aux_itens;
         cout << "Informacoes Confirmadas" << endl;
         contItens++;
@@ -319,7 +336,7 @@ void lancar_produtos(struct ItensVenda itens[], int &contItens, int codVenda){
 
 // função registrar venda, usamos como parametro as 3 structs junto a seus contadores, e chamamos outras 2 funções diferentes para imprimir cliente e vendedor com seus dados. 
 // dentro da função registrar venda para poder fazer o lançamento das vendas, ou seja ele envvia como paramatro para função de lancar produtos o vetor de itens, contador de itens e o codigo da venda que é usado como parametro, e na função de lançar a venda ele vincula a chave primária a chave estrangeira, entrando assim em um loop para lançar quantos produtos desejar
-void registrar_venda(struct Vendas x[], int &contVendas, int tamanhoMax, struct Clientes cliente[], int &contCliente, struct Vendedores vendedor[], int &contVendedores, struct ItensVenda itens[], int &contItens){
+void registrar_venda(struct Vendas x[], int &contVendas, int tamanhoMax, struct Clientes cliente[], int &contCliente, struct Vendedores vendedor[], int &contVendedores, struct ItensVenda itens[], int &contItens, struct Produtos produtos[], int &contProdutos){
     char conf;
     Vendas aux;
 
@@ -331,7 +348,7 @@ void registrar_venda(struct Vendas x[], int &contVendas, int tamanhoMax, struct 
     cout << "Posicao: " << contVendas+1 << endl;
     cout << "Digite codigo da venda: " << endl;
     cin >> aux.cod;
-    lancar_produtos(itens, contItens, aux.cod);
+    lancar_produtos(itens, contItens, aux.cod, produtos, contProdutos);
     cout << "Digite codigo do cliente: " << endl;
     cin >> aux.codCliente;
     imprimirCliente(cliente, contCliente, aux.codCliente);
@@ -358,6 +375,46 @@ void registrar_venda(struct Vendas x[], int &contVendas, int tamanhoMax, struct 
     } else cout << "Cadastro cancelado";
 
 }
+
+void incluir_venda(struct Produtos x[], int contProdutos){
+    char conf;
+    Produtos aux;
+    int qtdade;
+    int cod;
+    cout << "Digite codigo do produto" << endl;
+    cin >> cod;
+    if (cod < 0 || cod >= contProdutos){
+        cout << "Produto nao encontrado" << endl;
+    }
+    imprimir_produto(x, cod); // chamando função de imprimir produto
+
+    cout << "Digite a quantidade do produto: " << endl;
+    cin >>  qtdade;
+
+    if (qtdade > x[cod].quantEstoque){
+        cout << "Estoque Insuficiente" << endl;
+        cout << "Atualmente em estoque temos: " << x[cod].quantEstoque << endl;
+    } else {
+        cout << "Estoque Suficiente" << endl;
+        cout << "Voce confirma a inclusao Y|N: " << endl;
+        cin >> conf;
+        if (conf == 'y' || conf=='Y'){
+            x[cod].quantEstoque = x[cod].quantEstoque-qtdade;
+            } else{
+            cout << "Inclusao cancelada" << endl;
+        }
+        }
+
+}
+/*
+void consultardados(struct Produtos busc[], int cod)
+{
+    int i = 0;
+    for (;i < 10 && cod > busc[i].cod; i++)
+    if(cod == b)
+}
+*/
+
 
 int main(){
 
@@ -395,12 +452,14 @@ int main(){
                 inclusao_vendedor(vendedor, contVendedores, 100);
                 break;
             case 5:
-                registrar_venda(vendas, contVendas, 100, cliente, contClientes, vendedor, contVendedores, itens_venda, contItens);
+                registrar_venda(vendas, contVendas, 100, cliente, contClientes, vendedor, contVendedores, itens_venda, contItens, prod, contProdutos);
                 break;
+            case 6:
+                incluir_venda(prod, contProdutos);
             case 0:
                 cout << "Encerrando operacao" << endl;
                 break;
-            default:
+            default:    
                 cout << "Opcao invalida" << endl;
         }
     } while(opcao!=0);
@@ -409,4 +468,6 @@ int main(){
 /*
 Vinicius eu implementei uma função para fazer a leitura dos clientes, e uma para verificar se existe o codigo que o usuario está digitnado na lista
 replique isso para a função dos vendedores tbm, entenda o codigo!!!
+
+temos que corrigir na hora de registrar venda, o usuario atualmente esta podendo colocar o mesmo codigo de venda duas vezes
 */
