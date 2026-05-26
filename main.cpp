@@ -470,4 +470,13 @@ Vinicius eu implementei uma função para fazer a leitura dos clientes, e uma pa
 replique isso para a função dos vendedores tbm, entenda o codigo!!!
 
 temos que corrigir na hora de registrar venda, o usuario atualmente esta podendo colocar o mesmo codigo de venda duas vezes
+
+Confirmar com begosso, sobre como devemos fazer a inclusão em umm arquivo sequencial, se temos que fazer uma confirmação para ver se realmente os numeros digitados estão em sequencia, ou algo do tipo.
+
+
+fazer verificação na categoria para ver não deixar o usuario digitar o mesmo codigo mais de uma vez, tanto na categoria, produtos, usar o mesmo script que está incluso do inclusao cliente, ele dar um aviso, caso haja a entidade cadastrada e imprimir os seus dados
+
+A sua dúvida sobre Arquivos Sequenciais (Comentário final): Para simular um arquivo sequencial onde a chave principal deve estar em ordem, a melhor prática não é pedir para o usuário digitar o código
 */
+
+
