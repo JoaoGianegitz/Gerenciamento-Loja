@@ -57,22 +57,37 @@ void menu(){
         cout << "0 - Sair" << endl;
 }
 
+bool verificaCategoria(struct Categorias x[], int &contCategoria, int codPesquisa){
+    for (int i=0; i<contCategoria; i++){
+    if (codPesquisa == x[i].cod) {                  //(codPesquisa == cli[i].cod){
+        cout << "\n\n CATEGORIA JA CADASTRADA!";
+        cout << "\nCodigo da Categoria: " << x[i].cod;
+        cout << "\tDescricao: " << x[i].desc << endl;
 
+        return true;
+    } 
+    }
+    return false;
+}
 // função de leitura das Categorias
-void lerCategoria(struct Categorias x[], int &cont, int tamanhoMax){
+void lerCategoria(struct Categorias x[], int &contCategoria, int tamanhoMax){
     char conf;
     do{ 
-        if(cont>=tamanhoMax){
+        if(contCategoria>=tamanhoMax){
             cout << "Limite Atingido" << endl;
             break;
         }    
         cout << "\nCADASTRO DE CATEGORIAS\n" << endl;
-        cout << "Digite codigo: " << cont+1 << endl;
-        cin >> x[cont].cod;
+        cout << "Digite codigo: " << contCategoria+1 << endl;
+        cin >> x[contCategoria].cod;
+        while(verificaCategoria(x, contCategoria, x[contCategoria].cod)){ // aqui entramos em um loop ate o usuario digitar um codigo valido
+            cout << "Digite outro codigo: " << endl;
+            cin >> x[contCategoria].cod;
+        }
         cin.ignore();
-        cout << "Digite descricao: " << cont+1 << endl;
-        cin.getline(x[cont].desc, 60);
-        cont++;
+        cout << "Digite descricao: " << contCategoria+1 << endl;
+        cin.getline(x[contCategoria].desc, 60);
+        contCategoria++;
 
         cout << "Deseja cadastrar outro categoria: (Y ou N)" << endl;
         cin >> conf; 
@@ -83,31 +98,46 @@ void lerCategoria(struct Categorias x[], int &cont, int tamanhoMax){
     }while (conf=='Y' || conf =='y');
 }
 
+bool verificaProduto(struct Produtos x[], int &contProdutos, int codPesquisa){
+    for (int i=0; i<contProdutos; i++){
+    if (codPesquisa == x[i].cod) {                  //(codPesquisa == cli[i].cod){
+        cout << "\n PRODUTO JA CADASTRADO!";
+        cout << "\nCodigo do Produto: " << x[i].cod;
+        cout << "\nCodigo da Categoria: " << x[i].codCategoria;
+        cout << "\tDescricao: " << x[i].desc;
+        cout << "\tPreco unitario: " << x[i].precoUnit;
+        cout << "\tQuantidade em estoque: " << x[i].quantEstoque;
+        return true;
+    } 
+    }
+    return false;
+}
 // função de leitura de produtos
-void lerProduto(struct Produtos x[], int &cont, int tamanhoMax){
+void lerProduto(struct Produtos x[], int &contProdutos, int tamanhoMax){
     char conf;
     do{
-        if(cont>=tamanhoMax){
+        if(contProdutos>=tamanhoMax){
             cout << "Limite Atingido" << endl;
             break;
         }
         cout << "\nCADASTRO DE PRODUTOS\n" << endl;
-        cout << "Digite codigo: " << cont+1 << endl;
-        cin >> x[cont].cod;
-        cout << "Digite codigo de categoria: " << cont+1 << endl;
-        cin >> x[cont].codCategoria;
-        cout << "Digite descricao: " << cont+1 << endl;
+        cout << "Digite codigo: " << contProdutos+1 << endl;
+        cin >> x[contProdutos].cod;
+        verificaProduto(x, contProdutos, x[contProdutos].cod);
+        cout << "Digite codigo de categoria: " << contProdutos+1 << endl;
+        cin >> x[contProdutos].codCategoria;
+        cout << "Digite descricao: " << contProdutos+1 << endl;
         cin.ignore();
-        cin.getline(x[cont].desc, 60);
-        cout << "Digite Estoque Maximo: " << cont+1 << endl;
-        cin >> x[cont].estoqueMax;
-        cout << "Digite Estoque Minimo: " << cont+1 << endl;
-        cin >> x[cont].estoqueMin;
-        cout << "Digite preco unitario: " << cont+1 << endl;
-        cin >> x[cont].precoUnit;
-        cout << "Digite quantidade de Estoque: " << cont+1 << endl;
-        cin >> x[cont].quantEstoque;
-        cont++;
+        cin.getline(x[contProdutos].desc, 60);
+        cout << "Digite Estoque Maximo: " << contProdutos+1 << endl;
+        cin >> x[contProdutos].estoqueMax;
+        cout << "Digite Estoque Minimo: " << contProdutos+1 << endl;
+        cin >> x[contProdutos].estoqueMin;
+        cout << "Digite preco unitario: " << contProdutos+1 << endl;
+        cin >> x[contProdutos].precoUnit;
+        cout << "Digite quantidade de Estoque: " << contProdutos+1 << endl;
+        cin >> x[contProdutos].quantEstoque;
+        contProdutos++;
 
         cout << "Deseja cadastrar outro produto: (Y ou N)" << endl;
         cin >> conf; 
