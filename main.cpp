@@ -50,10 +50,13 @@ void menu(){
         cout << "\n====================Menu==================\n" << endl;
         cout << "1- Leitura de Categorias" << endl;
         cout << "2 - Leitura de Produtos" << endl;
-        cout << "3- Inclusao de Cliente" << endl;
-        cout << "4 - Inclusao de Vendedor" << endl;
+        cout << "3 - Leitura de Cliente" << endl;
+        cout << "4 - Leitura de Vendedor" << endl;
         cout << "5 - Registrar nova venda" << endl;
         cout << "6 - Inclusao de itens na venda" << endl;
+        cout << "7 - Consulta de Produtos" << endl;
+        cout << "8 - Verificacao de Produtos com Estoque Baixo";
+        cout << "9 - Valor Total Arrecadado com as Vendas";
         cout << "0 - Sair" << endl;
 }
 
@@ -167,10 +170,12 @@ bool verificaCliente(struct Clientes x[], int contCliente, int codPesquisa){
 
 
 // aqui na leitura de clientes
-void inclusao_cliente(struct Clientes x[], int &contCliente, int tamanhoMax){
+void ler_cliente(struct Clientes x[], int &contCliente, int tamanhoMax){
     char conf;
     int cadastrar=0;
+    int contNovosClientes=0;
     Clientes aux;
+    Clientes novosClientes[100];
     cout << "Deseja cadastrar quantos clientes: " << endl;
     cin >> cadastrar;
     for(int i=0; i<cadastrar;i++){
@@ -180,12 +185,12 @@ void inclusao_cliente(struct Clientes x[], int &contCliente, int tamanhoMax){
         }
 
         cout << "\tCADASTRO DE CLIENTES\t" << endl;
-        cout << "Posicao: " << contCliente+1 << endl;
+        cout << "Posicao: " << contNovosClientes+1 << endl;
         cout << "Digite codigo do cliente: " << endl;
         cin >> aux.cod;
-        while(verificaCliente(x, contCliente, aux.cod)){ // esse while aqui é para verificar se o codigo é igual a algum da lista, caso for ele pede ao usuario digitar novamente, outro codigo, repetindo ate que digite outro codigo
-            cout << "Digite outro codigo: " << endl;
-            cin >> aux.cod;
+        while(verificaCliente(x, contNovosClientes, aux.cod)){ // esse while aqui é para verificar se o codigo é igual a algum da lista, caso for ele pede ao usuario digitar novamente, outro codigo, repetindo ate que digite outro codigo
+        cout << "Digite outro codigo: " << endl;
+        cin >> aux.cod;
         }
         cin.ignore();
         cout << "Digite nome do cliente: " << endl;
@@ -205,10 +210,46 @@ void inclusao_cliente(struct Clientes x[], int &contCliente, int tamanhoMax){
         cin >> conf; 
 
         if(conf=='y' || conf=='Y'){
-            x[contCliente]=aux;
-            contCliente++;
+            novosClientes[contNovosClientes]=aux;
+            contNovosClientes++;
         } else cout << "Cadastro cancelado";
     }
+    if(contNovosClientes==0){
+        cout << "Operacao cancelada" << endl;
+        return; 
+    }
+    Clientes lstAtualizada[200];
+    int z=0; // contador de x
+    int j=0; // contador de novos clientes
+    int k=0; // contador lstAtualizada
+    
+
+    // aqui estamos fazendo a comparação de uma lista com a outra. se o codigo da lista x na pos z for menor que o cod da lista novos clientes na pos j a lista atualizada recebe x[z], pois é sequencial, se não ele recebe novosclientes[j]
+    while(z<contCliente && j<contNovosClientes){
+        if(x[z].cod < novosClientes[j].cod){
+            lstAtualizada[k] = x[z];
+            z++;
+        } else{
+            lstAtualizada[k]=novosClientes[j];
+            j++;
+        } k++;
+    }
+// limpeza de quem sobrou, ou seja a lst atualizada aqui recebe a lst x[z]
+    while(z<contCliente){
+        lstAtualizada[k]=x[z];
+        z++;
+        k++;
+    }
+    while(j<contNovosClientes){
+        lstAtualizada[k]=novosClientes[j];
+        k++;
+        j++;
+    }
+    for(int p=0;p<k;p++){
+        x[p]=lstAtualizada[p];
+    }
+    contCliente=k;
+    cout << "Operacao efetuada com sucesso" << endl;
 }
 
 bool verificaVendedor(struct Vendedores x[], int contVendedor, int codPesquisa){
@@ -226,7 +267,7 @@ bool verificaVendedor(struct Vendedores x[], int contVendedor, int codPesquisa){
 }
 
 
-void inclusao_vendedor(struct Vendedores x[], int &contVendedor, int tamanhoMax){
+void ler_vendedor(struct Vendedores x[], int &contVendedor, int tamanhoMax){
     char conf;
     int cadastrar=0;
     Vendedores aux;
@@ -436,15 +477,103 @@ void incluir_venda(struct Produtos x[], int contProdutos){
         }
 
 }
-/*
-void consultardados(struct Produtos busc[], int cod)
+
+void consultar_produtos(struct Produtos busc[], int contProdutos)
+{
+    int ini = 0;
+    int fim = contProdutos - 1;
+    int m;
+    bool achou = false;
+    int codPesquisa=0;
+    cout << "Digite o codigo do produto: ";
+    cin >> codPesquisa;
+    while(ini <= fim)
+    {
+        m = (ini + fim) / 2;
+        if (codPesquisa == busc[m].cod)
+        {
+            cout << "\n\nPRODUTO ENCONTRADO";
+            cout << "\nCodigo do produto: " << busc[m].cod;
+            cout << "\nDescricao do produto: " << busc[m].desc;
+            cout << "\nCodigo da categoria: " << busc[m].codCategoria;
+            cout << "\nQuantidade em estoque: " << busc[m].quantEstoque;
+            cout << "\nEstoque minimo: " << busc[m].estoqueMin;
+            cout << "\nEstoque maximo: " << busc[m].estoqueMax;
+            cout << "\nPreco do produto: " << busc[m].precoUnit;
+
+            float valorTotal = busc[m].quantEstoque * busc[m].precoUnit;
+
+            cout << "\nValor total em estoque: " << valorTotal << endl;
+
+            achou = true;
+            break;
+        }
+        else if(codPesquisa < busc[m].cod)
+        {
+            fim = m - 1;
+        }
+        else
+        {
+            ini = m + 1;
+        }
+    }
+    if (!achou)
+    {
+        cout << "\n\nProduto nao encontrado\n";
+    }
+    getch();
+}
+
+
+void estoque_baixo(struct Produtos prod[], int contProdutos)
 {
     int i = 0;
-    for (;i < 10 && cod > busc[i].cod; i++)
-    if(cod == b)
-}
-*/
+    float totalReposicao = 0;
 
+    for(;i < contProdutos; i++)
+    {
+        if(prod[i].quantEstoque <= prod[i].estoqueMin)
+        {
+            int qtdComprar = prod[i].estoqueMax - prod[i].quantEstoque;
+            float valorCompra = qtdComprar * prod[i].precoUnit;
+            totalReposicao += valorCompra;
+            
+            cout << "\n\nPRODUTO COM ESTOQUE ABAIXO DO MINIMO";
+            cout << "\nCodigo do produto: " << prod[i].cod;
+            cout << "\nDescricao do produto: " << prod[i].desc;
+            cout << "\nQuantidade em estoque: " << prod[i].quantEstoque;
+            cout << "\nEstoque maximo: " << prod[i].estoqueMax;
+            cout << "\nQuantidade a comprar: " << qtdComprar;
+            cout << "\nValor da compra: R$ " << valorCompra << endl;
+        }
+    }
+    cout << "\nValor total da reposicao: R$ " << totalReposicao << endl;
+    getch();
+}
+
+void total_arrecadado(struct Produtos prod[], int contProdutos, struct ItensVenda itens[], int contItens)
+{
+    int i = 0;
+    int j = 0;
+    float total = 0;
+    float valorItem = 0;
+
+    for(;i < contItens; i++)
+    {
+        int codigoProduto = itens[i].codProd;
+        for(;j < contProdutos; j++)
+        {
+            if(codigoProduto == prod[j].cod)
+            {
+                valorItem = itens[i].quant * prod[j].precoUnit;
+                total += valorItem;
+            }
+        }
+    }
+
+    cout << "Valor total arrecadado: R$ " << total << endl;
+    getch();
+}
 
 int main(){
 
@@ -464,6 +593,28 @@ int main(){
     int contItens=0;
     int opcao;
 
+// 1. Carga de Categorias
+    cat[0].cod = 1; strcpy(cat[0].desc, "Hortifruti");
+    cat[1].cod = 2; strcpy(cat[1].desc, "Grafica e Papelaria");
+    cat[2].cod = 3; strcpy(cat[2].desc, "Vestuario");
+    contCategorias = 3;
+
+    // 2. Carga de Produtos (cod, desc, codCategoria, quantEstoque, estoqueMin, estoqueMax, precoUnit)
+    prod[0].cod = 101; strcpy(prod[0].desc, "Pacote de Mandioca 1kg"); prod[0].codCategoria = 1; prod[0].quantEstoque = 50; prod[0].estoqueMin = 10; prod[0].estoqueMax = 100; prod[0].precoUnit = 15.50;
+    prod[1].cod = 102; strcpy(prod[1].desc, "Caderno Universitario"); prod[1].codCategoria = 2; prod[1].quantEstoque = 30; prod[1].estoqueMin = 5; prod[1].estoqueMax = 50; prod[1].precoUnit = 25.00;
+    prod[2].cod = 103; strcpy(prod[2].desc, "Camiseta Dry Termica"); prod[2].codCategoria = 3; prod[2].quantEstoque = 20; prod[2].estoqueMin = 5; prod[2].estoqueMax = 40; prod[2].precoUnit = 45.90;
+    prod[3].cod = 104; strcpy(prod[3].desc, "Impressao A4 Colorida"); prod[3].codCategoria = 2; prod[3].quantEstoque = 500; prod[3].estoqueMin = 100; prod[3].estoqueMax = 1000; prod[3].precoUnit = 2.00;
+    contProdutos = 4;
+
+    // 3. Carga de Clientes (cod, nome, endereco, telefone)
+    cliente[0].cod = 10; strcpy(cliente[0].nome, "Valter Silva"); strcpy(cliente[0].endereco, "Rua Central, 123"); strcpy(cliente[0].telefone, "18999990000");
+    cliente[1].cod = 20; strcpy(cliente[1].nome, "Cicero Siqueira"); strcpy(cliente[1].endereco, "Av. Brasil, 45"); strcpy(cliente[1].telefone, "18988881111");
+    contClientes = 2;
+
+    // 4. Carga de Vendedores (cod, nome, telefone)
+    vendedor[0].cod = 1; strcpy(vendedor[0].nome, "Joao Paulo"); strcpy(vendedor[0].telefone, "18977772222");
+    vendedor[1].cod = 2; strcpy(vendedor[1].nome, "Carlos Augusto"); strcpy(vendedor[1].telefone, "18966663333");
+    contVendedores = 2;
     do {
         menu();
         cout << "Faca sua escolha: " << endl;
@@ -476,16 +627,25 @@ int main(){
                 lerProduto(prod, contProdutos, 100); // LEITURA DE PRODUTOS
                 break;
             case 3:
-                inclusao_cliente(cliente, contClientes, 100);
-                break;
+                ler_cliente(cliente, contClientes, 100);
+                break; 
             case 4:
-                inclusao_vendedor(vendedor, contVendedores, 100);
+                ler_vendedor(vendedor, contVendedores, 100);
                 break;
             case 5:
                 registrar_venda(vendas, contVendas, 100, cliente, contClientes, vendedor, contVendedores, itens_venda, contItens, prod, contProdutos);
                 break;
             case 6:
                 incluir_venda(prod, contProdutos);
+            case 7:
+                consultar_produtos(prod, contProdutos);
+                break;
+            case 8:
+                estoque_baixo(prod, contProdutos);
+                break;
+            case 9:
+                total_arrecadado(prod, contProdutos, itens_venda, contItens);
+                break;
             case 0:
                 cout << "Encerrando operacao" << endl;
                 break;
@@ -499,14 +659,13 @@ int main(){
 Vinicius eu implementei uma função para fazer a leitura dos clientes, e uma para verificar se existe o codigo que o usuario está digitnado na lista
 replique isso para a função dos vendedores tbm, entenda o codigo!!!
 
-temos que corrigir na hora de registrar venda, o usuario atualmente esta podendo colocar o mesmo codigo de venda duas vezes
 
 Confirmar com begosso, sobre como devemos fazer a inclusão em umm arquivo sequencial, se temos que fazer uma confirmação para ver se realmente os numeros digitados estão em sequencia, ou algo do tipo.
 
+fazer uma função para ler cliente e outra para incluir cliente
 
-fazer verificação na categoria para ver não deixar o usuario digitar o mesmo codigo mais de uma vez, tanto na categoria, produtos, usar o mesmo script que está incluso do inclusao cliente, ele dar um aviso, caso haja a entidade cadastrada e imprimir os seus dados
 
-A sua dúvida sobre Arquivos Sequenciais (Comentário final): Para simular um arquivo sequencial onde a chave principal deve estar em ordem, a melhor prática não é pedir para o usuário digitar o código
+fazer uma confirmação se a digitação dos codigos está sendo em ordem crescente
 */
 
 
