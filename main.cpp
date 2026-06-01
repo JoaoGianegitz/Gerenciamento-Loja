@@ -85,15 +85,17 @@ struct ItensVenda{
 bool verificar(){
     bool resposta;
     cout << "Deseja continuar cadastrando? " << endl;
-    cout << "0 - Sim" << " | " << "1 - Nao" << endl;
+    cout << "1 - Sim" << " | " << "0 - Nao" << endl;
     cin >> resposta;
+    return resposta;
 }
 
 bool confirmarInfo(){
     bool resposta;
     cout << "Voce Confirma as informacoes? " << endl;
-    cout << "0 - Sim" << " | " << "1 - Nao" << endl;
+    cout << "1 - Sim" << " | " << "0 - Nao" << endl;
     cin >> resposta;
+    return resposta;
 }
 void menu(){
         cout << "\n\t =====================================================";
@@ -116,6 +118,18 @@ bool verificaCategoria(struct Categorias x[], int &contCategoria, int codPesquis
     for (int i=0; i<contCategoria; i++){
     if (codPesquisa == x[i].cod) {                  //(codPesquisa == cli[i].cod){
         cout << "\n\n CATEGORIA JA CADASTRADA!";
+        x[i].imprimir();
+
+        return true;
+    } 
+    }
+    return false;
+}
+
+bool verificaVenda(struct Vendas x[], int contVendas, int codPesquisa){
+    for (int i=0; i<contVendas; i++){
+    if (codPesquisa == x[i].cod) {                  //(codPesquisa == cli[i].cod){
+        cout << "\n\n VENDA JA CADASTRADA!";
         x[i].imprimir();
 
         return true;
@@ -199,7 +213,10 @@ void lerProduto(struct Produtos x[], int &contProdutos, int tamanhoMax){
         cout << "\nCADASTRO DE PRODUTOS\n" << endl;
         cout << "Digite codigo: " << contProdutos+1 << endl;
         cin >> auxiliar.cod;
-        verificaProduto(x, contProdutos, x[contProdutos].cod);
+        while(verificaProduto(x, contProdutos, auxiliar.cod)){
+            cout << "Digite outro codigo: " << endl;
+            cin >> auxiliar.cod;
+        }
         cout << "Digite codigo de categoria: " << contProdutos+1 << endl;
         cin >> auxiliar.codCategoria;
         cout << "Digite descricao: " << contProdutos+1 << endl;
@@ -310,8 +327,9 @@ void ler_cliente(struct Clientes x[], int &contCliente, int tamanhoMax){
 
         cout << "Voce confirma as informacoes: (Y ou N)" << endl;
         cin >> conf; 
-
+        system ("cls");
         if(conf=='y' || conf=='Y'){
+            cout << "LISTA ATUALIZADA!" << endl;
             incluirCliente(x, aux, tamanhoMax, contCliente);
             contCliente++;
             for(int i=0; i<contCliente;i++){
@@ -321,7 +339,7 @@ void ler_cliente(struct Clientes x[], int &contCliente, int tamanhoMax){
         } else cout << "Cadastro cancelado";
         resposta=verificar();
     }while(!resposta);
-} //john of fishing
+} 
 
 
 void imprimir_clientes(struct Clientes x[], int contClientes){
@@ -347,7 +365,29 @@ bool verificaVendedor(struct Vendedores x[], int contVendedor, int codPesquisa){
     }
     return false;
 }
+void inclusaoVendedor(struct Vendedores x[], struct Vendedores VendedorIncluir, int tamanhoMax, int contVendedor){
+    Vendedores auxiliar[tamanhoMax];
+    int i=0; // contador de Cliente
+    int j=0; // contador de auxiliar
 
+    // aqui estamos fazendo a comparação de uma lista com a outra. se o codigo da lista x na pos z for menor que o cod da lista novos clientes na pos j a lista atualizada recebe x[z], pois é sequencial, se não ele recebe novosclientes[j]
+    while(i<contVendedor && x[i].cod < VendedorIncluir.cod) // enqt ainda tem clientes, e o codigo atual for menor que o ClienteIncluir.cod
+    {
+        auxiliar[j] = x[i];
+        i++;
+        j++;
+    }
+    auxiliar[j] = VendedorIncluir;
+    j++;
+    while(i<contVendedor){
+        auxiliar[j] = x[i];
+        i++;
+        j++;
+    }
+    for(i=0;i<contVendedor+1; i++){ // devolve ao vetor principal
+        x[i]=auxiliar[i];
+    }
+}
 
 void ler_vendedor(struct Vendedores x[], int &contVendedor, int tamanhoMax){
     char conf;
@@ -382,7 +422,8 @@ void ler_vendedor(struct Vendedores x[], int &contVendedor, int tamanhoMax){
         cin >> conf; 
 
         if(conf=='y' || conf=='Y'){
-            x[contVendedor]=aux;
+            cout << "LISTA DE VENDEDORES ATUALIZADA" << endl;
+            inclusaoVendedor(x, aux, tamanhoMax, contVendedor);
             contVendedor++;
         } else cout << "Cadastro cancelado";
     }
@@ -462,7 +503,29 @@ void lancar_produtos(struct ItensVenda itens[], int &contItens, int codVenda, st
     } while(confirmacao == 'y' || confirmacao == 'Y');
     getch();
 }
+void inclusaoVenda(struct Vendas x[], struct Vendas VendasIncluir, int tamanhoMax, int contVendas){
+    Vendas auxiliar[tamanhoMax];
+    int i=0; // contador de Cliente
+    int j=0; // contador de auxiliar
 
+    // aqui estamos fazendo a comparação de uma lista com a outra. se o codigo da lista x na pos z for menor que o cod da lista novos clientes na pos j a lista atualizada recebe x[z], pois é sequencial, se não ele recebe novosclientes[j]
+    while(i<contVendas && x[i].cod < VendasIncluir.cod) // enqt ainda tem clientes, e o codigo atual for menor que o ClienteIncluir.cod
+    {
+        auxiliar[j] = x[i];
+        i++;
+        j++;
+    }
+    auxiliar[j] = VendasIncluir;
+    j++;
+    while(i<contVendas){
+        auxiliar[j] = x[i];
+        i++;
+        j++;
+    }
+    for(i=0;i<contVendas+1; i++){ // devolve ao vetor principal
+        x[i]=auxiliar[i];
+    }
+}
 // função registrar venda, usamos como parametro as 3 structs junto a seus contadores, e chamamos outras 2 funções diferentes para imprimir cliente e vendedor com seus dados. 
 // dentro da função registrar venda para poder fazer o lançamento das vendas, ou seja ele envvia como paramatro para função de lancar produtos o vetor de itens, contador de itens e o codigo da venda que é usado como parametro, e na função de lançar a venda ele vincula a chave primária a chave estrangeira, entrando assim em um loop para lançar quantos produtos desejar
 void registrar_venda(struct Vendas x[], int &contVendas, int tamanhoMax, struct Clientes cliente[], int &contCliente, struct Vendedores vendedor[], int &contVendedores, struct ItensVenda itens[], int &contItens, struct Produtos produtos[], int &contProdutos){
@@ -477,6 +540,10 @@ void registrar_venda(struct Vendas x[], int &contVendas, int tamanhoMax, struct 
     cout << "Posicao: " << contVendas+1 << endl;
     cout << "Digite codigo da venda: " << endl;
     cin >> aux.cod;
+    while(verificaVenda(x, contVendas, aux.cod)){ // aqui entramos em um loop ate o usuario digitar um codigo valido
+        cout << "Digite outro codigo: " << endl;
+        cin >> aux.cod;
+    }
     lancar_produtos(itens, contItens, aux.cod, produtos, contProdutos);
     cout << "Digite codigo do cliente: " << endl;
     cin >> aux.codCliente;
@@ -496,7 +563,8 @@ void registrar_venda(struct Vendas x[], int &contVendas, int tamanhoMax, struct 
     cin >> conf; 
 
     if(conf=='y' || conf=='Y'){
-        x[contVendas]=aux;
+        cout << "LISTA DE VENDAS ATUALIZADA" << endl;
+        inclusaoVenda(x, aux, tamanhoMax, contVendas);
         contVendas++;
     } else cout << "Cadastro cancelado";
     getch();
