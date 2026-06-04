@@ -100,6 +100,7 @@ char confirmarInfo(){
     cin >> opcao;
     return opcao;
 }
+
 void menu(){
         cout << "\n\t =====================================================";
         cout << "\n\t\t             ==== MENU ====";
@@ -113,10 +114,156 @@ void menu(){
         cout << "\n\t\t7 - Consulta de Produtos" << endl;
         cout << "\n\t\t8 - Consulta de Produtos com Estoque Baixo" << endl;
         cout << "\n\t\t9 - Consulta o Total Arrecadado com as Vendas" << endl;
-        cout << "\n\t\t10 - Excluir Cliente ( tem que colocar no siwtch case ainda)" << endl;
+        cout << "\n\t\t10 - Excluir Cliente" << endl;
         cout << "\n\t\t0 - Sair" << endl;
 }
 
+bool BuscarCategoria(struct Categorias x[], int codPesquisa, int contCategoria)
+{
+    int ini = 0;
+    int fim = contCategoria - 1;
+    int m;
+    while(ini <= fim)
+    {
+        m = (ini + fim) / 2;
+        if (codPesquisa == x[m].cod)
+        {
+            return true;
+        }
+        else if(codPesquisa < x[m].cod)
+        {
+            fim = m - 1;
+        }
+        else
+        {
+            ini = m + 1;
+        }
+    }
+    return false;
+}
+
+bool BuscarProdutos(struct Produtos x[], int codPesquisa, int contProdutos)
+{
+    int ini = 0;
+    int fim = contProdutos - 1;
+    int m;
+    while(ini <= fim)
+    {
+        m = (ini + fim) / 2;
+        if (codPesquisa == x[m].cod)
+        {
+            return true;
+        }
+        else if(codPesquisa < x[m].cod)
+        {
+            fim = m - 1;
+        }
+        else
+        {
+            ini = m + 1;
+        }
+    }
+    return false;
+}
+
+int BuscarPosProdutos(struct Produtos x[], int codPesquisa, int contProdutos)
+{
+    int ini = 0;
+    int fim = contProdutos - 1;
+    int m;
+    while(ini <= fim)
+    {
+        m = (ini + fim) / 2;
+        if (codPesquisa == x[m].cod)
+        {
+            return m;
+        }
+        else if(codPesquisa < x[m].cod)
+        {
+            fim = m - 1;
+        }
+        else
+        {
+            ini = m + 1;
+        }
+    }
+    return -1;
+}
+
+bool BuscarClientes(struct Clientes x[], int codPesquisa, int contClientes)
+{
+    int ini = 0;
+    int fim = contClientes - 1;
+    int m;
+    while(ini <= fim)
+    {
+        m = (ini + fim) / 2;
+        if (codPesquisa == x[m].cod)
+        {
+            return true;
+        }
+        else if(codPesquisa < x[m].cod)
+        {
+            fim = m - 1;
+        }
+        else
+        {
+            ini = m + 1;
+        }
+    }
+    return false;
+}
+
+
+bool BuscarVendedor(struct Vendedores x[], int codPesquisa, int contVendedor)
+{
+    int ini = 0;
+    int fim = contVendedor - 1;
+    int m;
+    while(ini <= fim)
+    {
+        m = (ini + fim) / 2;
+        if (codPesquisa == x[m].cod)
+        {
+            return true;
+        }
+        else if(codPesquisa < x[m].cod)
+        {
+            fim = m - 1;
+        }
+        else
+        {
+            ini = m + 1;
+        }
+    }
+    return false;
+}
+
+bool BuscarVendas(struct Vendas x[], int codPesquisa, int contVendas)
+{
+    int ini = 0;
+    int fim = contVendas - 1;
+    int m;
+    while(ini <= fim)
+    {
+        m = (ini + fim) / 2;
+        if (codPesquisa == x[m].cod)
+        {
+            return true;
+        }
+        else if(codPesquisa < x[m].cod)
+        {
+            fim = m - 1;
+        }
+        else
+        {
+            ini = m + 1;
+        }
+    }
+    return false;
+}
+
+//busca simples
 bool verificaCategoria(struct Categorias x[], int &contCategoria, int codPesquisa){
     for (int i=0; i<contCategoria; i++){
     if (codPesquisa == x[i].cod) {                  //(codPesquisa == cli[i].cod){
@@ -128,13 +275,14 @@ bool verificaCategoria(struct Categorias x[], int &contCategoria, int codPesquis
     }
     return false;
 }
-void imprimirCategoria(struct Categorias y[],int codPesquisa, int contCategoria){
+bool imprimirCategoria(struct Categorias y[],int codPesquisa, int contCategoria){
     for(int i=0; i<contCategoria; i++){
         if(y[i].cod == codPesquisa){
             y[i].imprimir();
-            break;
+            return true;
         } 
     }
+    return false;
 }
 
 bool verificaVenda(struct Vendas x[], int contVendas, int codPesquisa){
@@ -183,14 +331,15 @@ void lerCategoria(struct Categorias x[], int &contCategoria, int tamanhoMax){
             break;
         }    
         cout << "\nCADASTRO DE CATEGORIAS\n" << endl;
-        cout << "Digite codigo: " << contCategoria+1 << endl;
+        cout << "Digite codigo: " << endl;
         cin >> aux.cod;
-        while(verificaCategoria(x, contCategoria, aux.cod)){ // aqui entramos em um loop ate o usuario digitar um codigo valido
+        while(BuscarCategoria(x, aux.cod, contCategoria)==true){ // aqui entramos em um loop ate o usuario digitar um codigo valido
+            cout << "\n\tCATEGORIA JA CADASTRADA !!!" << endl;
             cout << "Digite outro codigo: " << endl;
             cin >> aux.cod;
         }
         cin.ignore();
-        cout << "Digite descricao: " << contCategoria+1 << endl;
+        cout << "Digite descricao: " << endl;
         cin.getline(aux.desc, 60);
         system ("cls");
         aux.imprimir(); 
@@ -257,16 +406,27 @@ void lerProduto(struct Produtos x[], int &contProdutos, int tamanhoMax, struct C
         cout << "\nCADASTRO DE PRODUTOS\n" << endl;
         cout << "Digite codigo: " << endl;
         cin >> auxiliar.cod;
-        while(verificaProduto(x, contProdutos, auxiliar.cod)){
+
+        while(BuscarProdutos(x, auxiliar.cod, contProdutos)==true){
+            cout << "\n\tPRODUTO JA CADASTRADO !!!" << endl;
             cout << "Digite outro codigo: " << endl;
             cin >> auxiliar.cod;
         }
+
         cout << "Digite codigo de categoria: " << endl;
         cin >> auxiliar.codCategoria;
+
+        while(BuscarCategoria(y, auxiliar.codCategoria, contCategoria)==false){
+        cout << "Digite codigo de categoria: " << endl;
+        cin >> auxiliar.codCategoria;
+        }
+
         imprimirCategoria(y, auxiliar.codCategoria, contCategoria);
+
         cout << "Digite descricao: " << endl;
         cin.ignore();
         cin.getline(auxiliar.desc, 60);
+
         cout << "Digite Estoque Maximo: " << endl;
         cin >> auxiliar.estoqueMax;
         cout << "Digite Estoque Minimo: " << endl;
@@ -275,9 +435,13 @@ void lerProduto(struct Produtos x[], int &contProdutos, int tamanhoMax, struct C
         cin >> auxiliar.precoUnit;
         cout << "Digite quantidade de Estoque: " << endl;
         cin >> auxiliar.quantEstoque;
+
         system("cls");
+
         auxiliar.imprimir();
+
         op=confirmarInfo();
+
         if(op=='s' || op=='S'){
             incluirProduto(x, auxiliar, tamanhoMax, contProdutos);
             contProdutos++;
@@ -347,7 +511,8 @@ void ler_cliente(struct Clientes x[], int &contCliente, int tamanhoMax){
         cout << "Digite codigo do cliente: " << endl;
         cin >> aux.cod;
 
-        while(verificaCliente(x, contCliente, aux.cod)){ // esse while aqui é para verificar se o codigo é igual a algum da lista, caso for ele pede ao usuario digitar novamente, outro codigo, repetindo ate que digite outro codigo
+        while(BuscarClientes(x, aux.cod, contCliente)==true){ // esse while aqui é para verificar se o codigo é igual a algum da lista, caso for ele pede ao usuario digitar novamente, outro codigo, repetindo ate que digite outro codigo
+        cout << "\n\tCLIENTE JA CADASTRADO !!" << endl;
         cout << "Digite outro codigo: " << endl;
         cin >> aux.cod;
         }
@@ -389,9 +554,8 @@ void imprimir_clientes(struct Clientes x[], int contClientes){
         cout << "Codigo do Cliente: "<<  x[i].telefone << endl;
         cout << endl;
     }
-
-
 }
+
 bool verificaVendedor(struct Vendedores x[], int contVendedor, int codPesquisa){
     for (int i=0; i<contVendedor; i++){
     if (codPesquisa == x[i].cod) {                  //(codPesquisa == cli[i].cod){
@@ -442,7 +606,8 @@ void ler_vendedor(struct Vendedores x[], int &contVendedor, int tamanhoMax){
         cout << "Posicao: " << contVendedor+1 << endl;
         cout << "Digite codigo do vendedor: " << endl;
         cin >> aux.cod;
-        while(verificaVendedor(x, contVendedor, aux.cod)){ 
+        while(BuscarVendedor(x, aux.cod, contVendedor)==true){ 
+            cout << "\n\tVENDEDOR JA CADASTRADO!!!" << endl;
             cout << "Digite outro codigo: " << endl;
             cin >> aux.cod;
         }
@@ -502,35 +667,48 @@ void imprimir_produto(struct Produtos x[], int codigoProduto){
     cout << "Preco unitario: " << x[codigoProduto].precoUnit;
     cout << "Quantidade em estoque: " << x[codigoProduto].quantEstoque << endl;
 }
+
+//preciso arrumar aqui
+
 void lancar_produtos(struct ItensVenda itens[], int &contItens, int codVenda, struct Produtos produtos[], int contProdutos){
     ItensVenda aux_itens;
     char conf;
     char confirmacao;
     char op, op1;
+    int posProduto;
     do {
 
     aux_itens.codVenda=codVenda;
 
     cout << "Digite Codigo do produto: " << endl; 
     cin >> aux_itens.codProd;
-    if(aux_itens.codProd < 0 || aux_itens.codProd >= contProdutos){
+
+    posProduto=BuscarPosProdutos(produtos, aux_itens.codProd, contProdutos);
+
+    if(posProduto==-1){
         cout << "Produto nao existe" << endl;
+        op=verificar();
         continue; // interromper a iteração atual de um loop, mas tambem utilizado especificamente para uma condicional
     }
-    imprimir_produto(produtos, aux_itens.codProd);
+
+    produtos[posProduto].imprimir();
+    
     cout << "Digite quantidade: " << endl;
     cin >> aux_itens.quant;
-    if(aux_itens.quant > produtos[aux_itens.codProd].quantEstoque){
+    
+    if(aux_itens.quant > produtos[posProduto].quantEstoque){
         cout << "Estoque insuficiente" << endl;
-        cout << "Disponivel no momento: " << produtos[aux_itens.codProd].quantEstoque << endl;
+        cout << "Disponivel no momento: " << produtos[posProduto].quantEstoque << endl;
         continue;
     }
+    
     cout << "\nCodigo do Produto: " << aux_itens.codProd;
-    cout << "\nQuantidade de Produtos: " << aux_itens.quant;
+    cout << "\nQuantidade de Produtos: " << aux_itens.quant << endl;
+    
     op=confirmarInfo();
 
     if (op=='S' || op=='s'){
-        produtos[aux_itens.codProd].quantEstoque=produtos[aux_itens.codProd].quantEstoque-aux_itens.quant;
+        produtos[posProduto].quantEstoque=produtos[posProduto].quantEstoque-aux_itens.quant;
         itens[contItens]=aux_itens;
         cout << "Informacoes Confirmadas" << endl;
         contItens++;
@@ -607,25 +785,42 @@ void registrar_venda(struct Vendas x[], int &contVendas, int tamanhoMax, struct 
     Vendas aux;
     char op, op1;
     do{
+
         if(contVendas >= tamanhoMax){
             cout << "\n[ERRO] Limite de cadastros digitados (" << tamanhoMax << ")!" << endl;
             return;
         }
+
         cout << "\nLANCAMENTO DE VENDAS\t" << endl;
         cout << "Posicao: " << contVendas+1 << endl;
         cout << "Digite codigo da venda: " << endl;
         cin >> aux.cod;
-        while(verificaVenda(x, contVendas, aux.cod)){ // aqui entramos em um loop ate o usuario digitar um codigo valido
+
+        while(BuscarVendas(x, aux.cod, contVendas)==true){ // aqui entramos em um loop ate o usuario digitar um codigo valido
+            cout << "\n\tVENDA DA CADASTRADA!!!" << endl;
             cout << "Digite outro codigo: " << endl;
             cin >> aux.cod;
         }
+
         lancar_produtos(itens, contItens, aux.cod, produtos, contProdutos);
+        
         cout << "Digite codigo do cliente: " << endl;
         cin >> aux.codCliente;
-        imprimirCliente(cliente, contCliente, aux.codCliente);
+
+        while(BuscarClientes(cliente, aux.codCliente, contCliente)==false){
+            cout << "\n\tCLIENTE NAO CADASTRADO!!!" << endl;
+            cout << "Digite outro codigo; " << endl;
+            cin >> aux.codCliente;
+        }
+
         cout << "Digite codigo do Vendedor: " << endl;
         cin >> aux.codVendedor;
-        imprimirVendedor(vendedor, contVendedores, aux.codVendedor);
+
+        while(BuscarVendedor(vendedor, aux.codVendedor, contVendedores)==false){
+            cout << "\n\tVENDEDOR NAO CADASTRADO!!!" << endl;
+            cout << "Digite outro codigo: " << endl;
+            cin >> aux.codVendedor;
+        }
 
         cout << "Digite data da venda" << endl;
         cin.ignore();
@@ -639,13 +834,17 @@ void registrar_venda(struct Vendas x[], int &contVendas, int tamanhoMax, struct 
             inclusaoVenda(x, aux, tamanhoMax, contVendas);
             contVendas++;
             cout << "LISTA DE VENDAS ATUALIZADA" << endl;
+        
             for(int i=0;i<contVendas; i++){
                 cout << endl;
                 x[i].imprimir();
                 cout << endl;
         }
+
             }  else cout << "Cadastro cancelado";
-        op1=verificar();
+        
+            op1=verificar();
+
     } while(op1 == 's' || op1 =='S');
     getch();
 }
@@ -734,7 +933,7 @@ void total_arrecadado(struct Produtos prod[], int contProdutos, struct ItensVend
     for(;i < contItens; i++)
     {
         int codigoProduto = itens[i].codProd;
-        for(;j < contProdutos; j++)
+        for(j=0;j < contProdutos; j++)
         {
             if(codigoProduto == prod[j].cod)
             {
