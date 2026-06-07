@@ -485,7 +485,6 @@ void ler_cliente(struct Clientes x[], int &contCliente, int tamanhoMax){
         }
 
         cout << "\tCADASTRO DE CLIENTES\t" << endl;
-        //cout << "Posicao: " << contNovosClientes << endl;
         cout << "Digite codigo do cliente: " << endl;
         cin >> aux.cod;
 
@@ -601,28 +600,6 @@ void ler_vendedor(struct Vendedores x[], int &contVendedor, int tamanhoMax){
     } while(op1 == 's' || op1 == 'S');
     getch();
 }
-
-bool imprimirVendedor(struct Vendedores x[], int contVendedor, int codVendedor){
-    for(int i=0; i<contVendedor; i++){
-        if (codVendedor == x[i].cod) {                
-            cout << "\nVENDEDOR!";
-            x[i].imprimir();
-            cout << endl;
-
-            return true;
-        }
-    }
-    cout << "Vendedor nao cadastrado" << endl;
-    return false; 
-}
-
-void imprimir_produto(struct Produtos x[], int codigoProduto){
-    cout << "Descricao Produto: " << x[codigoProduto].desc;
-    cout << "Preco unitario: " << x[codigoProduto].precoUnit;
-    cout << "Quantidade em estoque: " << x[codigoProduto].quantEstoque << endl;
-}
-
-//preciso arrumar aqui
 
 void lancar_produtos(struct ItensVenda itens[], int &contItens, int codVenda, struct Produtos produtos[], int contProdutos){
     ItensVenda aux_itens;
