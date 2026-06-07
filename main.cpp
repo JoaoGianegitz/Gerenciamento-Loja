@@ -65,7 +65,7 @@ struct Vendas{
     int cod;
     int codCliente;
     int codVendedor;
-    char data[10];
+    char data[12];
 
     void imprimir(){
         cout << "Codigo da Venda: " << cod << endl;
@@ -264,35 +264,13 @@ bool BuscarVendas(struct Vendas x[], int codPesquisa, int contVendas)
 }
 
 //busca simples
-bool verificaCategoria(struct Categorias x[], int &contCategoria, int codPesquisa){
-    for (int i=0; i<contCategoria; i++){
-    if (codPesquisa == x[i].cod) {                  //(codPesquisa == cli[i].cod){
-        cout << "\n\n CATEGORIA JA CADASTRADA!";
-        x[i].imprimir();
 
-        return true;
-    } 
-    }
-    return false;
-}
 bool imprimirCategoria(struct Categorias y[],int codPesquisa, int contCategoria){
     for(int i=0; i<contCategoria; i++){
         if(y[i].cod == codPesquisa){
             y[i].imprimir();
             return true;
         } 
-    }
-    return false;
-}
-
-bool verificaVenda(struct Vendas x[], int contVendas, int codPesquisa){
-    for (int i=0; i<contVendas; i++){
-    if (codPesquisa == x[i].cod) {                  //(codPesquisa == cli[i].cod){
-        cout << "\n\n VENDA JA CADASTRADA!";
-        x[i].imprimir();
-
-        return true;
-    } 
     }
     return false;
 }
@@ -334,7 +312,7 @@ void lerCategoria(struct Categorias x[], int &contCategoria, int tamanhoMax){
         cout << "Digite codigo: " << endl;
         cin >> aux.cod;
         while(BuscarCategoria(x, aux.cod, contCategoria)==true){ // aqui entramos em um loop ate o usuario digitar um codigo valido
-            cout << "\n\tCATEGORIA JA CADASTRADA !!!" << endl;
+            cout << "\nCATEGORIA JA CADASTRADA !!!" << endl;
             cout << "Digite outro codigo: " << endl;
             cin >> aux.cod;
         }
@@ -359,16 +337,6 @@ void lerCategoria(struct Categorias x[], int &contCategoria, int tamanhoMax){
     getch();
 }
 
-bool verificaProduto(struct Produtos x[], int &contProdutos, int codPesquisa){
-    for (int i=0; i<contProdutos; i++){
-    if (codPesquisa == x[i].cod) {                  //(codPesquisa == cli[i].cod){
-        cout << "\n PRODUTO JA CADASTRADO!";
-        x[i].imprimir();
-        return true;
-    } 
-    }
-    return false;
-}
 
 void incluirProduto(struct Produtos x[], struct Produtos ProdutosIncluir, int tamanhoMax, int contProdutos){
     struct Produtos auxiliar[tamanhoMax];
@@ -417,7 +385,8 @@ void lerProduto(struct Produtos x[], int &contProdutos, int tamanhoMax, struct C
         cin >> auxiliar.codCategoria;
 
         while(BuscarCategoria(y, auxiliar.codCategoria, contCategoria)==false){
-        cout << "Digite codigo de categoria: " << endl;
+        cout << "[ERRO]: Categoria nao cadastrada!" << endl;
+        cout << "Digite outro codigo de categoria: " << endl;
         cin >> auxiliar.codCategoria;
         }
 
@@ -431,10 +400,32 @@ void lerProduto(struct Produtos x[], int &contProdutos, int tamanhoMax, struct C
         cin >> auxiliar.estoqueMax;
         cout << "Digite Estoque Minimo: " << endl;
         cin >> auxiliar.estoqueMin;
+        
+        while(auxiliar.estoqueMin < 0 || auxiliar.estoqueMax < 0 || auxiliar.estoqueMax < auxiliar.estoqueMin){
+        cout << "[ERRO]: Estoque maximo menor que o minimo!" << endl;
+        cout << "Digite Estoque Maximo: " << endl;
+        cin >> auxiliar.estoqueMax;
+        cout << "Digite Estoque Minimo: " << endl;
+        cin >> auxiliar.estoqueMin;
+        }
+
         cout << "Digite preco unitario: " << endl;
         cin >> auxiliar.precoUnit;
+
+        while(auxiliar.precoUnit <=0){
+            cout << "[ERRO]: Preco invalido " << endl;
+            cout << "Digite preco unitario: " << endl;
+            cin >> auxiliar.precoUnit;
+        }
+
         cout << "Digite quantidade de Estoque: " << endl;
         cin >> auxiliar.quantEstoque;
+
+        while(auxiliar.quantEstoque < 0){
+            cout << "[ERRO] : Estoque invalido" << endl;
+            cout << "Digite quantidade de Estoque: " << endl;
+            cin >> auxiliar.quantEstoque;   
+        }
 
         system("cls");
 
@@ -450,24 +441,11 @@ void lerProduto(struct Produtos x[], int &contProdutos, int tamanhoMax, struct C
                 x[i].imprimir();
                 cout << endl;
             }
-        }
+        } else cout << "[CADASTRO DE PRODUTO CANCELADO]" << endl;
 
         op1=verificar();
     }while (op1=='s' || op1=='S');
     getch();    
-}
-
-
-// função verifica cliente. Ultilizamos um contador de cliente e um codigo de pesquisa, onde temos um loop que percorre toda a lista para ver se existe um codigo igual, caso existir ele vai retornar um valor booleano, que vamos usar como parametro na hora de fazer a leitura dos registros, para saber se devemos continuar fazendo a leitura ou não
-bool verificaCliente(struct Clientes x[], int contCliente, int codPesquisa){
-    for (int i=0; i<contCliente; i++){
-    if (codPesquisa == x[i].cod) {                  //(codPesquisa == cli[i].cod){
-        cout << "\n\n CLIENTE JA CADASTRADO!";
-        x[i].imprimir();
-        return true;
-    } 
-    }
-    return false;
 }
 
 void incluirCliente(struct Clientes x[], struct Clientes ClienteIncluir, int tamanhoMax, int contCliente){
@@ -556,17 +534,6 @@ void imprimir_clientes(struct Clientes x[], int contClientes){
     }
 }
 
-bool verificaVendedor(struct Vendedores x[], int contVendedor, int codPesquisa){
-    for (int i=0; i<contVendedor; i++){
-    if (codPesquisa == x[i].cod) {                  //(codPesquisa == cli[i].cod){
-        cout << "\n\n VENDEDOR JA CADASTRADO!";
-        x[i].imprimir();
-
-        return true;
-    } 
-    }
-    return false;
-}
 void inclusaoVendedor(struct Vendedores x[], struct Vendedores VendedorIncluir, int tamanhoMax, int contVendedor){
     Vendedores auxiliar[tamanhoMax];
     int i=0; // contador de Cliente
@@ -620,7 +587,7 @@ void ler_vendedor(struct Vendedores x[], int &contVendedor, int tamanhoMax){
         aux.imprimir();
 
         op=confirmarInfo();
-        if(op=='s' || op=='s'){
+        if(op=='s' || op=='S'){
             inclusaoVendedor(x, aux, tamanhoMax, contVendedor);
             contVendedor++;
             cout << "LISTA DE VENDEDORES ATUALIZADA" << endl;
@@ -633,19 +600,6 @@ void ler_vendedor(struct Vendedores x[], int &contVendedor, int tamanhoMax){
     op1=verificar();
     } while(op1 == 's' || op1 == 'S');
     getch();
-}
-
-bool imprimirCliente(struct Clientes x[], int contCliente, int codCliente){
-    for(int i=0; i<contCliente; i++){
-        if (codCliente == x[i].cod) {                
-            cout << "\nCLIENTE!";
-            x[i].imprimir();
-            cout << endl;
-            return true;
-        }
-    }
-    cout << "Cliente nao cadastrado" << endl;
-    return false; 
 }
 
 bool imprimirVendedor(struct Vendedores x[], int contVendedor, int codVendedor){
@@ -687,7 +641,7 @@ void lancar_produtos(struct ItensVenda itens[], int &contItens, int codVenda, st
 
     if(posProduto==-1){
         cout << "Produto nao existe" << endl;
-        op=verificar();
+        op1=verificar();
         continue; // interromper a iteração atual de um loop, mas tambem utilizado especificamente para uma condicional
     }
 
@@ -699,6 +653,7 @@ void lancar_produtos(struct ItensVenda itens[], int &contItens, int codVenda, st
     if(aux_itens.quant > produtos[posProduto].quantEstoque){
         cout << "Estoque insuficiente" << endl;
         cout << "Disponivel no momento: " << produtos[posProduto].quantEstoque << endl;
+        op1=verificar();
         continue;
     }
     
@@ -749,29 +704,42 @@ void incluir_venda(struct Produtos x[], int contProdutos){
     int qtdade;
     int cod;
     char op, op1;
+    int posProduto;
     do{
         cout << "Digite codigo do produto" << endl;
         cin >> cod;
-        if (cod < 0 || cod >= contProdutos){
+        posProduto=BuscarPosProdutos(x, cod, contProdutos);
+        if (posProduto == -1){
             cout << "Produto nao encontrado" << endl;
+            op1=verificar();
+            continue;
         }
-        imprimir_produto(x, cod); // chamando função de imprimir produto
+        x[posProduto].imprimir();
 
         cout << "Digite a quantidade do produto: " << endl;
         cin >>  qtdade;
 
-        if (qtdade > x[cod].quantEstoque){
+        while(qtdade <= 0){
+        cout << "[ERRO] Quantidade invalida!" << endl;
+        cout << "Digite uma quantidade maior que zero: " << endl;
+        cin >> qtdade;
+        }
+
+        while(qtdade > x[posProduto].quantEstoque){
             cout << "Estoque Insuficiente" << endl;
-            cout << "Atualmente em estoque temos: " << x[cod].quantEstoque << endl;
-        } else {
-            cout << "Estoque Suficiente" << endl;
-            op=confirmarInfo();
-            if (op == 'S' || op=='s'){
-                x[cod].quantEstoque = x[cod].quantEstoque-qtdade;
-                } else{
-                cout << "Inclusao cancelada" << endl;
-            }
-            }
+            cout << "Atualmente em estoque temos: " << x[posProduto].quantEstoque << endl;
+            cout << endl;
+            cout << "Digite a quantidade do produto: " << endl;
+            cin >>  qtdade; 
+        }
+        
+        op=confirmarInfo();
+            
+        if (op == 'S' || op=='s'){
+            x[posProduto].quantEstoque = x[posProduto].quantEstoque-qtdade;
+            } else{
+            cout << "Inclusao cancelada" << endl;
+        }
         op1=verificar();
         } while(op1=='S' || op1=='s');
         
@@ -792,7 +760,6 @@ void registrar_venda(struct Vendas x[], int &contVendas, int tamanhoMax, struct 
         }
 
         cout << "\nLANCAMENTO DE VENDAS\t" << endl;
-        cout << "Posicao: " << contVendas+1 << endl;
         cout << "Digite codigo da venda: " << endl;
         cin >> aux.cod;
 
@@ -801,8 +768,6 @@ void registrar_venda(struct Vendas x[], int &contVendas, int tamanhoMax, struct 
             cout << "Digite outro codigo: " << endl;
             cin >> aux.cod;
         }
-
-        lancar_produtos(itens, contItens, aux.cod, produtos, contProdutos);
         
         cout << "Digite codigo do cliente: " << endl;
         cin >> aux.codCliente;
@@ -824,13 +789,14 @@ void registrar_venda(struct Vendas x[], int &contVendas, int tamanhoMax, struct 
 
         cout << "Digite data da venda" << endl;
         cin.ignore();
-        cin.getline(aux.data, 10);
+        cin.getline(aux.data, 12);
 
         aux.imprimir();
 
         op=confirmarInfo();
 
         if(op=='S' || op=='s'){
+            lancar_produtos(itens, contItens, aux.cod, produtos, contProdutos);
             inclusaoVenda(x, aux, tamanhoMax, contVendas);
             contVendas++;
             cout << "LISTA DE VENDAS ATUALIZADA" << endl;
@@ -841,7 +807,7 @@ void registrar_venda(struct Vendas x[], int &contVendas, int tamanhoMax, struct 
                 cout << endl;
         }
 
-            }  else cout << "Cadastro cancelado";
+            }  else cout << "Cadastro cancelado" << endl;
         
             op1=verificar();
 
@@ -906,7 +872,7 @@ void estoque_baixo(struct Produtos prod[], int contProdutos)
     {
         if(prod[i].quantEstoque <= prod[i].estoqueMin)
         {
-            int qtdComprar = prod[i].estoqueMax - prod[i].quantEstoque;
+            int qtdComprar = prod[i].estoqueMin - prod[i].quantEstoque;
             float valorCompra = qtdComprar * prod[i].precoUnit;
             totalReposicao += valorCompra;
             
@@ -946,6 +912,25 @@ void total_arrecadado(struct Produtos prod[], int contProdutos, struct ItensVend
     cout << "Valor total arrecadado: R$ " << total << endl;
     getch();
 }
+
+void total_arrecadado2(struct Produtos prod[], int contProdutos, struct ItensVenda itens[], int contItens) {
+    float total = 0;
+
+    for(int i = 0; i < contItens; i++)
+    {
+        int posProduto =
+            BuscarPosProdutos(prod, itens[i].codProd, contProdutos);
+
+        if(posProduto != -1)
+        {
+            total += itens[i].quant * prod[posProduto].precoUnit;
+        }
+    }
+
+    cout << "Valor total arrecadado: R$ " << total << endl;
+    getch();
+}
+
 void exclusao_cliente(struct Clientes cli[], int &contClientes)
 {
     int codPesquisa;
@@ -1008,6 +993,7 @@ int main(){
     int contVendedores=0;
     int contVendas=0;
     int contItens=0;
+    int tamanhoMax=5;
     int opcao;
 
 // 1. Carga de Categorias
@@ -1017,15 +1003,15 @@ int main(){
     contCategorias = 3;
 
     // 2. Carga de Produtos (cod, desc, codCategoria, quantEstoque, estoqueMin, estoqueMax, precoUnit)
-    prod[0].cod = 101; strcpy(prod[0].desc, "Pacote de Mandioca 1kg"); prod[0].codCategoria = 1; prod[0].quantEstoque = 50; prod[0].estoqueMin = 10; prod[0].estoqueMax = 100; prod[0].precoUnit = 15.50;
+    prod[0].cod=1; strcpy(prod[0].desc, "Banana");prod[0].codCategoria=1; prod[0].quantEstoque=50; prod[0].estoqueMax=100; prod[0].estoqueMin=10; prod[0].precoUnit=5;
     prod[1].cod = 102; strcpy(prod[1].desc, "Caderno Universitario"); prod[1].codCategoria = 2; prod[1].quantEstoque = 30; prod[1].estoqueMin = 5; prod[1].estoqueMax = 50; prod[1].precoUnit = 25.00;
     prod[2].cod = 103; strcpy(prod[2].desc, "Camiseta Dry Termica"); prod[2].codCategoria = 3; prod[2].quantEstoque = 20; prod[2].estoqueMin = 5; prod[2].estoqueMax = 40; prod[2].precoUnit = 45.90;
     prod[3].cod = 104; strcpy(prod[3].desc, "Impressao A4 Colorida"); prod[3].codCategoria = 2; prod[3].quantEstoque = 500; prod[3].estoqueMin = 100; prod[3].estoqueMax = 1000; prod[3].precoUnit = 2.00;
-    contProdutos = 4;
+    contProdutos = 5;
 
     // 3. Carga de Clientes (cod, nome, endereco, telefone)
-    cliente[0].cod = 10; strcpy(cliente[0].nome, "Valter Silva"); strcpy(cliente[0].endereco, "Rua Central, 123"); strcpy(cliente[0].telefone, "18999990000");
-    cliente[1].cod = 20; strcpy(cliente[1].nome, "Cicero Siqueira"); strcpy(cliente[1].endereco, "Av. Brasil, 45"); strcpy(cliente[1].telefone, "18988881111");
+    cliente[0].cod = 1; strcpy(cliente[0].nome, "Valter Silva"); strcpy(cliente[0].endereco, "Rua Central, 123"); strcpy(cliente[0].telefone, "18999990000");
+    cliente[1].cod = 2; strcpy(cliente[1].nome, "Cicero Siqueira"); strcpy(cliente[1].endereco, "Av. Brasil, 45"); strcpy(cliente[1].telefone, "18988881111");
     contClientes = 2;
 
     // 4. Carga de Vendedores (cod, nome, telefone)
@@ -1039,19 +1025,19 @@ int main(){
         cin >> opcao;
         switch(opcao) {
             case 1:
-                lerCategoria(cat, contCategorias, 100); // LEITURA DE CATEGORIA
+                lerCategoria(cat, contCategorias, tamanhoMax); // LEITURA DE CATEGORIA
                 break;
             case 2:
-                lerProduto(prod, contProdutos, 100, cat, contCategorias); // LEITURA DE PRODUTOS
+                lerProduto(prod, contProdutos, tamanhoMax, cat, contCategorias); // LEITURA DE PRODUTOS
                 break;
             case 3:
-                ler_cliente(cliente, contClientes, 100);
+                ler_cliente(cliente, contClientes, tamanhoMax);
                 break; 
             case 4:
-                ler_vendedor(vendedor, contVendedores, 100);
+                ler_vendedor(vendedor, contVendedores, tamanhoMax);
                 break;
             case 5:
-                registrar_venda(vendas, contVendas, 100, cliente, contClientes, vendedor, contVendedores, itens_venda, contItens, prod, contProdutos);
+                registrar_venda(vendas, contVendas, tamanhoMax, cliente, contClientes, vendedor, contVendedores, itens_venda, contItens, prod, contProdutos);
                 break;
             case 6:
                 incluir_venda(prod, contProdutos);
@@ -1063,7 +1049,7 @@ int main(){
                 estoque_baixo(prod, contProdutos);
                 break;
             case 9:
-                total_arrecadado(prod, contProdutos, itens_venda, contItens);
+                total_arrecadado2(prod, contProdutos, itens_venda, contItens);
                 break;
             case 10:
                 exclusao_cliente(cliente, contClientes);
@@ -1077,17 +1063,5 @@ int main(){
     } while(opcao!=0);
 
 }
-/*
-Vinicius eu implementei uma função para fazer a leitura dos clientes, e uma para verificar se existe o codigo que o usuario está digitnado na lista
-replique isso para a função dos vendedores tbm, entenda o codigo!!!
-
-
-Confirmar com begosso, sobre como devemos fazer a inclusão em umm arquivo sequencial, se temos que fazer uma confirmação para ver se realmente os numeros digitados estão em sequencia, ou algo do tipo.
-
-fazer uma função para ler cliente e outra para incluir cliente
-
-
-fazer uma confirmação se a digitação dos codigos está sendo em ordem crescente
-*/
 
 
