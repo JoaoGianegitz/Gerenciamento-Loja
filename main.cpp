@@ -522,17 +522,6 @@ void ler_cliente(struct Clientes x[], int &contCliente, int tamanhoMax){
 } 
 
 
-void imprimir_clientes(struct Clientes x[], int contClientes){
-    for(int i=0;i<contClientes;i++){
-        cout << endl;
-        cout << "Codigo do Cliente: "<<  x[i].cod << endl;
-        cout << "Codigo do Cliente: "<<  x[i].nome << endl;
-        cout << "Codigo do Cliente: "<<  x[i].endereco << endl;
-        cout << "Codigo do Cliente: "<<  x[i].telefone << endl;
-        cout << endl;
-    }
-}
-
 void inclusaoVendedor(struct Vendedores x[], struct Vendedores VendedorIncluir, int tamanhoMax, int contVendedor){
     Vendedores auxiliar[tamanhoMax];
     int i=0; // contador de Cliente
@@ -627,11 +616,17 @@ void lancar_produtos(struct ItensVenda itens[], int &contItens, int codVenda, st
     cout << "Digite quantidade: " << endl;
     cin >> aux_itens.quant;
     
-    if(aux_itens.quant > produtos[posProduto].quantEstoque){
+    while(aux_itens.quant <=0){
+        cout << "Quantidade invalida" << endl;
+        cout << "Digite outra quantidade" << endl;
+        cin >> aux_itens.quant;
+    }
+
+    while(aux_itens.quant > produtos[posProduto].quantEstoque){
         cout << "Estoque insuficiente" << endl;
         cout << "Disponivel no momento: " << produtos[posProduto].quantEstoque << endl;
-        op1=verificar();
-        continue;
+        cout << "Digite outra quantidade" << endl;
+        cin >> aux_itens.quant;
     }
     
     cout << "\nCodigo do Produto: " << aux_itens.codProd;
@@ -676,16 +671,24 @@ void inclusaoVenda(struct Vendas x[], struct Vendas VendasIncluir, int tamanhoMa
     }
 }
 
-void incluir_venda(struct Produtos x[], int contProdutos){
+void incluir_venda(struct ItensVenda itens[], int &contItens,struct Produtos x[], int contProdutos, struct Vendas vendas[], int contVendas){
     char conf;
     int qtdade;
     int cod;
     char op, op1;
     int posProduto;
+    ItensVenda aux;
     do{
+        cout << "Digite codigo da venda" << endl;
+        cin >> aux.codVenda;
+        while(BuscarVendas(vendas, aux.codVenda, contVendas)==false){
+            cout << "[ERRO] VENDA NAO CADASTRADA" << endl;
+            cout << "Digite outro codigo de venda" << endl;
+            cin >> aux.codVenda;
+        }
         cout << "Digite codigo do produto" << endl;
-        cin >> cod;
-        posProduto=BuscarPosProdutos(x, cod, contProdutos);
+        cin >> aux.codProd;
+        posProduto=BuscarPosProdutos(x, aux.codProd, contProdutos);
         if (posProduto == -1){
             cout << "Produto nao encontrado" << endl;
             op1=verificar();
@@ -694,26 +697,29 @@ void incluir_venda(struct Produtos x[], int contProdutos){
         x[posProduto].imprimir();
 
         cout << "Digite a quantidade do produto: " << endl;
-        cin >>  qtdade;
+        cin >>  aux.quant;
 
-        while(qtdade <= 0){
+        while(aux.quant <= 0){
         cout << "[ERRO] Quantidade invalida!" << endl;
         cout << "Digite uma quantidade maior que zero: " << endl;
-        cin >> qtdade;
+        cin >> aux.quant;
         }
 
-        while(qtdade > x[posProduto].quantEstoque){
+        while(aux.quant > x[posProduto].quantEstoque){
             cout << "Estoque Insuficiente" << endl;
             cout << "Atualmente em estoque temos: " << x[posProduto].quantEstoque << endl;
             cout << endl;
             cout << "Digite a quantidade do produto: " << endl;
-            cin >>  qtdade; 
+            cin >>  aux.quant; 
         }
         
         op=confirmarInfo();
             
         if (op == 'S' || op=='s'){
-            x[posProduto].quantEstoque = x[posProduto].quantEstoque-qtdade;
+            x[posProduto].quantEstoque = x[posProduto].quantEstoque-aux.quant;
+            itens[contItens]=aux;
+            contItens++;
+            cout << "Item incluido com sucesso" << endl;
             } else{
             cout << "Inclusao cancelada" << endl;
         }
@@ -1017,7 +1023,7 @@ int main(){
                 registrar_venda(vendas, contVendas, tamanhoMax, cliente, contClientes, vendedor, contVendedores, itens_venda, contItens, prod, contProdutos);
                 break;
             case 6:
-                incluir_venda(prod, contProdutos);
+                incluir_venda(itens_venda, contItens, prod, contProdutos, vendas, contVendas);
                 break;
             case 7:
                 consultar_produtos(prod, contProdutos);
