@@ -214,6 +214,53 @@ bool BuscarClientes(struct Clientes x[], int codPesquisa, int contClientes)
     return false;
 }
 
+int BuscarPosCliente(struct Clientes x[], int codPesquisa, int contClientes)
+{
+    int ini = 0;
+    int fim = contClientes - 1;
+    int m;
+    while(ini <= fim)
+    {
+        m = (ini + fim) / 2;
+        if (codPesquisa == x[m].cod)
+        {
+            return m;
+        }
+        else if(codPesquisa < x[m].cod)
+        {
+            fim = m - 1;
+        }
+        else
+        {
+            ini = m + 1;
+        }
+    }
+    return -1;
+}
+
+int BuscarPosVendedor(struct Vendedores x[], int codPesquisa, int contVendedor)
+{
+    int ini = 0;
+    int fim = contVendedor - 1;
+    int m;
+    while(ini <= fim)
+    {
+        m = (ini + fim) / 2;
+        if (codPesquisa == x[m].cod)
+        {
+            return m;
+        }
+        else if(codPesquisa < x[m].cod)
+        {
+            fim = m - 1;
+        }
+        else
+        {
+            ini = m + 1;
+        }
+    }
+    return -1;
+}
 
 bool BuscarVendedor(struct Vendedores x[], int codPesquisa, int contVendedor)
 {
@@ -592,8 +639,6 @@ void ler_vendedor(struct Vendedores x[], int &contVendedor, int tamanhoMax){
 
 void lancar_produtos(struct ItensVenda itens[], int &contItens, int codVenda, struct Produtos produtos[], int contProdutos){
     ItensVenda aux_itens;
-    char conf;
-    char confirmacao;
     char op, op1;
     int posProduto;
     do {
@@ -760,6 +805,8 @@ void registrar_venda(struct Vendas x[], int &contVendas, int tamanhoMax, struct 
             cout << "Digite outro codigo; " << endl;
             cin >> aux.codCliente;
         }
+        int posCliente=BuscarPosCliente(cliente, aux.codCliente, contCliente);
+        cliente[posCliente].imprimir();
 
         cout << "Digite codigo do Vendedor: " << endl;
         cin >> aux.codVendedor;
@@ -769,6 +816,8 @@ void registrar_venda(struct Vendas x[], int &contVendas, int tamanhoMax, struct 
             cout << "Digite outro codigo: " << endl;
             cin >> aux.codVendedor;
         }
+        int posVendedor=BuscarPosVendedor(vendedor, aux.codVendedor, contVendedores);
+        vendedor[posVendedor].imprimir();
 
         cout << "Digite data da venda" << endl;
         cin.ignore();
@@ -855,7 +904,7 @@ void estoque_baixo(struct Produtos prod[], int contProdutos)
     {
         if(prod[i].quantEstoque <= prod[i].estoqueMin)
         {
-            int qtdComprar = prod[i].estoqueMin - prod[i].quantEstoque;
+            int qtdComprar = prod[i].estoqueMax - prod[i].quantEstoque;
             float valorCompra = qtdComprar * prod[i].precoUnit;
             totalReposicao += valorCompra;
             
@@ -872,31 +921,7 @@ void estoque_baixo(struct Produtos prod[], int contProdutos)
     getch();
 }
 
-void total_arrecadado(struct Produtos prod[], int contProdutos, struct ItensVenda itens[], int contItens)
-{
-    int i = 0;
-    int j = 0;
-    float total = 0;
-    float valorItem = 0;
-
-    for(;i < contItens; i++)
-    {
-        int codigoProduto = itens[i].codProd;
-        for(j=0;j < contProdutos; j++)
-        {
-            if(codigoProduto == prod[j].cod)
-            {
-                valorItem = itens[i].quant * prod[j].precoUnit;
-                total += valorItem;
-            }
-        }
-    }
-
-    cout << "Valor total arrecadado: R$ " << total << endl;
-    getch();
-}
-
-void total_arrecadado2(struct Produtos prod[], int contProdutos, struct ItensVenda itens[], int contItens) {
+void total_arrecadado(struct Produtos prod[], int contProdutos, struct ItensVenda itens[], int contItens) {
     float total = 0;
 
     for(int i = 0; i < contItens; i++)
@@ -922,40 +947,56 @@ void exclusao_cliente(struct Clientes cli[], int &contClientes)
     cout << "Digite o codigo do cliente a excluir: ";
     cin >> codPesquisa;
 
-    for(int i = 0; i < contClientes; i++)
+    int inicio = 0;
+    int fim = contClientes - 1;
+    int meio;
+
+    while(inicio <= fim)
     {
-        if(cli[i].cod == codPesquisa)
+        meio = (inicio + fim) / 2;
+
+        if(cli[meio].cod == codPesquisa)
         {
             cout << "\nCliente encontrado:";
-            cout << "\nCodigo: " << cli[i].cod;
-            cout << "\nNome: " << cli[i].nome;
-            cout << "\nEndereco: " << cli[i].endereco;
-            cout << "\nTelefone: " << cli[i].telefone;
+            cout << "\nCodigo: " << cli[meio].cod;
+            cout << "\nNome: " << cli[meio].nome;
+            cout << "\nEndereco: " << cli[meio].endereco;
+            cout << "\nTelefone: " << cli[meio].telefone << endl;
 
-            char conf;
-            cout << "\n\nConfirma exclusao? (S | N): ";
-            cin >> conf;
+            char op=confirmarInfo();
 
-            if(conf == 'S' || conf == 's')
+            if(op== 'S' || op == 's')
             {
-                for(int j = i; j < contClientes - 1; j++)
+                for(int j = meio; j < contClientes - 1; j++)
                 {
                     cli[j] = cli[j + 1];
                 }
 
                 contClientes--;
 
-                cout << "\nCliente excluido com sucesso!";
+                cout << "\nCliente excluido com sucesso!" << endl;
+                cout << "Lista de Clientes Atualizada" << endl;
+                for(int i=0; i<contClientes;i++){
+                    cli[i].imprimir();
+                }
             }
 
             achou = true;
             break;
         }
+        else if(codPesquisa < cli[meio].cod)
+        {
+            fim = meio - 1;
+        }
+        else
+        {
+            inicio = meio + 1;
+        }
     }
 
     if(!achou)
     {
-        cout << "\nCliente nao encontrado!";
+        cout << "\nCliente nao encontrado!" << endl;
     }
 
     getch();
@@ -976,7 +1017,7 @@ int main(){
     int contVendedores=0;
     int contVendas=0;
     int contItens=0;
-    int tamanhoMax=5;
+    int tamanhoMax=10;
     int opcao;
 
 // 1. Carga de Categorias
@@ -1032,7 +1073,7 @@ int main(){
                 estoque_baixo(prod, contProdutos);
                 break;
             case 9:
-                total_arrecadado2(prod, contProdutos, itens_venda, contItens);
+                total_arrecadado(prod, contProdutos, itens_venda, contItens);
                 break;
             case 10:
                 exclusao_cliente(cliente, contClientes);
