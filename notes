@@ -1,0 +1,23 @@
+/*
+// 1. Carga de Categorias
+    cat[0].cod = 1; strcpy(cat[0].desc, "Hortifruti");
+    cat[1].cod = 2; strcpy(cat[1].desc, "Grafica e Papelaria");
+    cat[2].cod = 3; strcpy(cat[2].desc, "Vestuario");
+    contCategorias = 3;
+
+    // 2. Carga de Produtos (cod, desc, codCategoria, quantEstoque, estoqueMin, estoqueMax, precoUnit)
+    prod[0].cod=1; strcpy(prod[0].desc, "Banana");prod[0].codCategoria=1; prod[0].quantEstoque=50; prod[0].estoqueMax=100; prod[0].estoqueMin=10; prod[0].precoUnit=5;
+    prod[1].cod = 102; strcpy(prod[1].desc, "Caderno Universitario"); prod[1].codCategoria = 2; prod[1].quantEstoque = 30; prod[1].estoqueMin = 5; prod[1].estoqueMax = 50; prod[1].precoUnit = 25.00;
+    prod[2].cod = 103; strcpy(prod[2].desc, "Camiseta Dry Termica"); prod[2].codCategoria = 3; prod[2].quantEstoque = 20; prod[2].estoqueMin = 5; prod[2].estoqueMax = 40; prod[2].precoUnit = 45.90;
+    prod[3].cod = 104; strcpy(prod[3].desc, "Impressao A4 Colorida"); prod[3].codCategoria = 2; prod[3].quantEstoque = 500; prod[3].estoqueMin = 100; prod[3].estoqueMax = 1000; prod[3].precoUnit = 2.00;
+    contProdutos = 5;
+
+    // 3. Carga de Clientes (cod, nome, endereco, telefone)
+    cliente[0].cod = 1; strcpy(cliente[0].nome, "Valter Silva"); strcpy(cliente[0].endereco, "Rua Central, 123"); strcpy(cliente[0].telefone, "18999990000");
+    cliente[1].cod = 2; strcpy(cliente[1].nome, "Cicero Siqueira"); strcpy(cliente[1].endereco, "Av. Brasil, 45"); strcpy(cliente[1].telefone, "18988881111");
+    contClientes = 2;
+
+    // 4. Carga de Vendedores (cod, nome, telefone)
+    vendedor[0].cod = 1; strcpy(vendedor[0].nome, "Joao Paulo"); strcpy(vendedor[0].telefone, "18977772222");
+    vendedor[1].cod = 2; strcpy(vendedor[1].nome, "Carlos Augusto"); strcpy(vendedor[1].telefone, "18966663333");
+    contVendedores = 2;*/

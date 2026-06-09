@@ -633,7 +633,7 @@ void ler_vendedor(struct Vendedores x[], int &contVendedor, int tamanhoMax){
     getch();
 }
 
-void lancar_produtos(struct ItensVenda itens[], int &contItens, int codVenda, struct Produtos produtos[], int contProdutos){
+void lancar_produtos(struct ItensVenda itens[], int &contItens, int codVenda, struct Produtos produtos[], int contProdutos, int tamanhoMax){
     ItensVenda aux_itens;
     char op, op1;
     int posProduto;
@@ -641,6 +641,10 @@ void lancar_produtos(struct ItensVenda itens[], int &contItens, int codVenda, st
 
     aux_itens.codVenda=codVenda;
 
+    if(contItens>= tamanhoMax){
+        cout << "\n[ERRO] Limite de cadastros digitados (" << tamanhoMax << ")!" << endl;
+        break;
+    }
     cout << "Digite Codigo do produto: " << endl; 
     cin >> aux_itens.codProd;
 
@@ -712,11 +716,15 @@ void inclusaoVenda(struct Vendas x[], struct Vendas VendasIncluir, int tamanhoMa
     }
 }
 
-void incluir_venda(struct ItensVenda itens[], int &contItens,struct Produtos x[], int contProdutos, struct Vendas vendas[], int contVendas){
+void incluir_venda(struct ItensVenda itens[], int &contItens,struct Produtos x[], int contProdutos, struct Vendas vendas[], int contVendas, int tamanhoMax){
     char op, op1;
     int posProduto;
     ItensVenda aux;
     do{
+        if(contItens >= tamanhoMax){
+            cout << "\n[ERRO] Limite de cadastros digitados (" << tamanhoMax << ")!" << endl;
+            break;
+        }
         cout << "Digite codigo da venda" << endl;
         cin >> aux.codVenda;
         while(BuscarVendas(vendas, aux.codVenda, contVendas)==false){
@@ -820,7 +828,7 @@ void registrar_venda(struct Vendas x[], int &contVendas, int tamanhoMax, struct 
         op=confirmarInfo();
 
         if(op=='S' || op=='s'){
-            lancar_produtos(itens, contItens, aux.cod, produtos, contProdutos);
+            lancar_produtos(itens, contItens, aux.cod, produtos, contProdutos, tamanhoMax);
             inclusaoVenda(x, aux, tamanhoMax, contVendas);
             contVendas++;
             cout << "LISTA DE VENDAS ATUALIZADA" << endl;
@@ -1011,7 +1019,6 @@ int main(){
     int contItens=0;
     int tamanhoMax=10;
     int opcao;
-/*
 // 1. Carga de Categorias
     cat[0].cod = 1; strcpy(cat[0].desc, "Hortifruti");
     cat[1].cod = 2; strcpy(cat[1].desc, "Grafica e Papelaria");
@@ -1033,7 +1040,7 @@ int main(){
     // 4. Carga de Vendedores (cod, nome, telefone)
     vendedor[0].cod = 1; strcpy(vendedor[0].nome, "Joao Paulo"); strcpy(vendedor[0].telefone, "18977772222");
     vendedor[1].cod = 2; strcpy(vendedor[1].nome, "Carlos Augusto"); strcpy(vendedor[1].telefone, "18966663333");
-    contVendedores = 2;*/
+    contVendedores = 2;
     do {
         setlocale(LC_ALL, "");
         menu();
@@ -1056,7 +1063,7 @@ int main(){
                 registrar_venda(vendas, contVendas, tamanhoMax, cliente, contClientes, vendedor, contVendedores, itens_venda, contItens, prod, contProdutos);
                 break;
             case 6:
-                incluir_venda(itens_venda, contItens, prod, contProdutos, vendas, contVendas);
+                incluir_venda(itens_venda, contItens, prod, contProdutos, vendas, contVendas, tamanhoMax);
                 break;
             case 7:
                 consultar_produtos(prod, contProdutos);
